@@ -26,16 +26,18 @@ conda activate py12 && cd /Users/jackson/python_ws/cursor_ws/do_dimension && pyt
 
 | 环境变量 | 默认 | 说明 |
 |----------|------|------|
-| `DO_DEBUG_SCENE_EXPORT` | `1`（开） | 设为 `0` 关闭导出 |
+| `DO_DEBUG_SCENE_EXPORT` | `1`（开） | 设为 `0` 关闭导出（快速迭代/无头环境建议关掉） |
 | `DO_DEBUG_ARCHIVE_NO_OVERWRITE` | `0` | 设为 `1` 时同日同版本目录追加时间戳，不覆盖 |
 | `DO_DEBUG_ARCHIVE_ROOT` | `~/python_ws/cursor_ws/do_debug_scene_archive` | 本地归档仓根目录 |
 | `DO_DEBUG_ARCHIVE_GIT_PUSH` | `1` | 设为 `0` 跳过 git push |
 | `DO_DEBUG_ARCHIVE_OPEN_BROWSER` | `1` | 设为 `0` 不自动打开浏览器 |
+| `GITLAB_TOKEN` | （空） | Personal Access Token；未设置时只写本地归档，不 push |
 
-- **Git push**：需要环境变量 `GITLAB_TOKEN`（Personal Access Token）；未设置时只写本地，不 push。
-- **禁止**把 token 写入仓库、脚本或 `do_agent.env` 等可被提交的文件；若 token 曾在对话中暴露，建议轮换。
+- **快速迭代**：只需投图不看 3D 时设 `DO_DEBUG_SCENE_EXPORT=0`（同时不会开浏览器 / 不会 push）。
+- **多场景**：第一期只导出 `project_scene_dict` 的**第一个**场景；多场景时会打 warning。
+- **Git push**：依赖 `GITLAB_TOKEN`；**禁止**把 token 写入仓库、脚本或 `do_agent.env` 等可被提交的文件；若 token 曾在对话中暴露，建议轮换。
 - 首次使用前 clone 归档仓一次：`git clone https://git.designorder.cn/jian.wu/do_debug_scene_archive.git ~/python_ws/cursor_ws/do_debug_scene_archive`
-- 归档失败只记 warning，**不阻断**排查主流程。
+- 归档失败只记 warning，**不阻断**排查主流程（辅助导出允许 try/except，见下方修复纪律例外）。
 
 ## 测试 case 的选择
 
@@ -70,6 +72,7 @@ case 由 `scripts/test_parametric.py` 中 `test_input_file_oss_address()` 里的
 ## 修复纪律（重要）
 
 - **禁止用容错/hotfix 掩盖问题**：不要加 try-except 吞异常、不要加"过滤掉异常数据"的兜底逻辑来让程序跑通。用户会撤销这类改动。先找到根因，修根因。
+- **例外（场景调试 HTML 归档）**：`_maybe_export_scene_debug` 对外围导出允许 `try/except` 只记 warning，这是规格要求（归档失败不阻断排查），不要删掉该保护去“严格化”。
 - **最小化修改**：只改和根因直接相关的代码，不要顺手重构、不要动无关逻辑。
 - **修复后必须重新运行同一 case 验证**，报告运行结果（是否复现、输出是否正确）。
 - 如果根因在上游依赖（docore/domath）或数据侧（特征识别服务、前端输入），报告结论即可，不要在 do_dimension 里绕。
