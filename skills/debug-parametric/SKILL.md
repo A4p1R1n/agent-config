@@ -20,6 +20,23 @@ conda activate py12 && cd /Users/jackson/python_ws/cursor_ws/do_dimension && pyt
 - 环境统一用 `py12`。
 - 运行可能较长（分钟级），放后台跑并监控日志输出。
 
+## 场景调试 HTML 归档
+
+投图成功后，`test_parametric.py` 默认自动导出可交互 3D 场景调试页（Features / Relations 高亮），写入本地 `cache/` 并同步到归档仓。
+
+| 环境变量 | 默认 | 说明 |
+|----------|------|------|
+| `DO_DEBUG_SCENE_EXPORT` | `1`（开） | 设为 `0` 关闭导出 |
+| `DO_DEBUG_ARCHIVE_NO_OVERWRITE` | `0` | 设为 `1` 时同日同版本目录追加时间戳，不覆盖 |
+| `DO_DEBUG_ARCHIVE_ROOT` | `~/python_ws/cursor_ws/do_debug_scene_archive` | 本地归档仓根目录 |
+| `DO_DEBUG_ARCHIVE_GIT_PUSH` | `1` | 设为 `0` 跳过 git push |
+| `DO_DEBUG_ARCHIVE_OPEN_BROWSER` | `1` | 设为 `0` 不自动打开浏览器 |
+
+- **Git push**：需要环境变量 `GITLAB_TOKEN`（Personal Access Token）；未设置时只写本地，不 push。
+- **禁止**把 token 写入仓库、脚本或 `do_agent.env` 等可被提交的文件；若 token 曾在对话中暴露，建议轮换。
+- 首次使用前 clone 归档仓一次：`git clone https://git.designorder.cn/jian.wu/do_debug_scene_archive.git ~/python_ws/cursor_ws/do_debug_scene_archive`
+- 归档失败只记 warning，**不阻断**排查主流程。
+
 ## 测试 case 的选择
 
 case 由 `scripts/test_parametric.py` 中 `test_input_file_oss_address()` 里的 `input_json` 决定，**最后一次赋值生效**（文件里保留了大量历史 case 的注释行）。
