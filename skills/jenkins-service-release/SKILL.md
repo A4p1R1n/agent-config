@@ -1,6 +1,6 @@
 ---
 name: jenkins-service-release
-description: 通过 Jenkins 触发算法服务镜像构建与 K8s 部署。与 git 发版分开。当用户说 Jenkins 发版、发布到预生产/预发版/算法重构、投图服务/drawing2d/数据处理服务发版、/jenkins-service-release 时使用。
+description: 通过 Jenkins 触发算法服务镜像构建与 K8s 部署。与 git 发版分开。当用户说 Jenkins 发版、发布到预生产/预发版/算法重构、投图服务/drawing2d/数据处理服务/cgm服务发版、/jenkins-service-release 时使用。
 ---
 
 # Jenkins Service Release
@@ -11,18 +11,19 @@ description: 通过 Jenkins 触发算法服务镜像构建与 K8s 部署。与 g
 
 从用户输入提取 **服务类型** 和 **目标环境**，映射为 Jenkins 参数：
 
-| 用户说法（服务） | `collection` | 触发的 `serviceName` |
-|-----------------|--------------|---------------------|
-| 投图服务 | `python-ai` | `ai-python-auto-dimension`、`ai-python-auto-dimension-part`（两个都发） |
-| 数据处理服务 | `python-ai` | `ai-algorithm-stp-convert` |
-| drawing2d / 二维投图 | `front-web-apps` | `do-web-apps-drawing`（固定一个） |
+| 用户说法（服务） | 触发的构建（`collection` + `serviceName`） |
+|-----------------|------------------------------------------|
+| 投图服务 | `python-ai` + `ai-python-auto-dimension`、`python-ai` + `ai-python-auto-dimension-part`（两个都发） |
+| 数据处理服务 | `python-ai` + `ai-algorithm-stp-convert` |
+| drawing2d / 二维投图 / 前端 | `front-web-apps` + `do-web-apps-drawing`、`middleware` + `middleware-node-queue-server`（两个都发） |
+| cgm / cgm服务 / do-cgm | `ops` + `do-cgm` |
 
 | 用户说法（环境） | `profile` | `branch` |
 |-----------------|-----------|----------|
 | 预生产 / 预发版 / 生产环境 | `production` | `release` |
 | 算法重构 | `suanfa` | `dev` |
 
-`collection` 和 `serviceName` 按上表固定，随服务类型变化；`profile` / `branch` 规则各服务相同。
+`collection` 和 `serviceName` 按上表固定，随服务类型变化；同一服务类型内各构建的 `profile` / `branch` 规则相同。drawing2d 的两个服务 `collection` 不同，脚本按目标分别传参。
 
 用户未明确服务或环境时**必须询问**，不要猜测。
 
@@ -30,8 +31,12 @@ description: 通过 Jenkins 触发算法服务镜像构建与 K8s 部署。与 g
 - 「帮我把投图服务发布到预生产」→ 并行两次构建：`production` + `release`，两个 serviceName
 - 「投图服务发布到预生产和算法重构」→ **四个构建全部并行**（2 环境 × 2 serviceName），不要等一个环境完成再发另一个
 - 「数据处理服务发布到算法重构」→ 一次构建：`suanfa` + `dev`，`ai-algorithm-stp-convert`
-- 「发布 drawing2d 到算法重构环境」→ 一次构建：`front-web-apps` + `do-web-apps-drawing`，`suanfa` + `dev`
-- 「drawing2d 发布到预发版环境」→ 一次构建：`production` + `release`
+- 「发布 drawing2d 到算法重构环境」→ **两次构建并行**：`do-web-apps-drawing`（`front-web-apps`）+ `middleware-node-queue-server`（`middleware`），均为 `suanfa` + `dev`
+- 「drawing2d 发布到预发版环境」→ **两次构建并行**：同上两个服务，均为 `production` + `release`
+- 「drawing2d 发布到预发版和算法重构」→ **四个构建全部并行**（2 环境 × 2 serviceName）
+- 「cgm 服务发布到预生产」→ 一次构建：`ops` + `do-cgm`，`production` + `release`
+- 「cgm 服务发布到算法重构」→ 一次构建：`ops` + `do-cgm`，`suanfa` + `dev`
+- 「cgm 发布到预生产和算法重构」→ **两次构建并行**（2 环境 × 1 serviceName）
 
 ## 固定参数（勾选框）
 
@@ -39,7 +44,7 @@ description: 通过 Jenkins 触发算法服务镜像构建与 K8s 部署。与 g
 
 | 参数 | 默认值 |
 |------|--------|
-| `collection` | 见上表（投图/数据处理=`python-ai`，drawing2d=`front-web-apps`） |
+| `collection` | 见上表（投图/数据处理=`python-ai`；drawing2d 前端=`front-web-apps`，队列中间件=`middleware`；cgm=`ops`） |
 | `CleanWorkSpace` | `false` |
 | `DeployToK8S` | `true` |
 | `Rsync` | `false` |
@@ -82,7 +87,7 @@ CRUMB_FIELD=$(echo "$CRUMB_JSON" | python3 -c "import sys,json; print(json.load(
 
 ### 2. 并行触发所有 (环境 × serviceName)
 
-对用户指定的**每个环境**，对每个 `serviceName` 各 POST **一次**。多个环境时**全部同时触发**，不要按环境串行。
+对用户指定的**每个环境**，对每个 `serviceName` 各 POST **一次**（`collection` 取该服务对应值）。多个环境时**全部同时触发**，不要按环境串行。
 
 ```bash
 HTTP_CODE=$(curl -sS -D /tmp/jenkins_hdr.txt -o /dev/null -w '%{http_code}' -X POST \
@@ -105,7 +110,8 @@ QUEUE_ID=$(grep -i '^location:' /tmp/jenkins_hdr.txt | sed 's|.*/queue/item/||;s
 - 成功：HTTP **201**（偶发 302）
 - 失败：立即停止，报告 HTTP 码和响应体，**不要 retry 同一个 serviceName**
 
-投图服务 + 两个环境：共 **4 次 POST 全部并行**（预生产×2 + 算法重构×2）。
+投图服务 + 两个环境：共 **4 次 POST 全部并行**（预生产×2 + 算法重构×2）。  
+drawing2d + 两个环境：共 **4 次 POST 全部并行**（每环境：drawing + middleware-node-queue-server）。
 
 ### 3. 从 queue 解析 build 号
 
@@ -152,11 +158,20 @@ bash scripts/release.sh --service projection --env preprod --env refactor
 # 数据处理 → 算法重构
 bash scripts/release.sh --service dataproc --env refactor
 
-# drawing2d → 算法重构
+# drawing2d → 算法重构（drawing + middleware-node-queue-server，2 个并行）
 bash scripts/release.sh --service drawing2d --env refactor
 
-# drawing2d → 预发版 + 算法重构（2 个构建并行）
+# drawing2d → 预发版 + 算法重构（4 个构建并行）
 bash scripts/release.sh --service drawing2d --env preprod,refactor
+
+# cgm → 算法重构
+bash scripts/release.sh --service cgm --env refactor
+
+# cgm → 预生产
+bash scripts/release.sh --service cgm --env preprod
+
+# cgm → 预生产 + 算法重构（2 个构建并行）
+bash scripts/release.sh --service cgm --env preprod,refactor
 ```
 
 ## 完成后报告
@@ -164,7 +179,7 @@ bash scripts/release.sh --service drawing2d --env preprod,refactor
 向用户报告：
 
 - 服务类型、目标环境（profile / branch）
-- 每个 `serviceName` 的 queue id、build 号、镜像 displayName、构建结果
+- 每个 `serviceName`（含其 `collection`）的 queue id、build 号、镜像 displayName、构建结果
 - Jenkins console 链接
 - 若失败：失败阶段（可查 console 末尾）
 
@@ -175,6 +190,7 @@ bash scripts/release.sh --service drawing2d --env preprod,refactor
 - **不要**用 `lastBuild`；**不要**对同一 (环境, serviceName) 触发两次。
 - **多个环境必须并行触发**，不要串行等待前一个环境完成。
 - 投图服务单环境 = 两个 serviceName 并行；双环境 = 四个构建全部并行。
-- drawing2d 单环境 = 一个 serviceName；双环境 = 两个构建并行。
+- drawing2d 单环境 = 两个服务并行（`do-web-apps-drawing` + `middleware-node-queue-server`）；双环境 = 四个构建全部并行。
+- cgm 单环境 = 一次构建（`ops` + `do-cgm`）；双环境 = 两次构建并行。
 - 用户要求修改 `CleanWorkSpace`、`DeployToK8S`、`Rsync`、`Reverse` 时按用户指定覆盖默认值。
 - 本 skill 不负责 Python 包发包；git 发版走 `algorithm-service-release`。

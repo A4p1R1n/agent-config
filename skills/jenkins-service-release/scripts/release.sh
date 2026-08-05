@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Jenkins 并行发版脚本（兼容 macOS bash 3.2）
-# 支持多 serviceName、多环境同时并行触发
+# 支持多 serviceName、多环境、按服务不同 collection 同时并行触发
 set -euo pipefail
 
 JENKINS_USER=$(cat /Users/jackson/secret/jenkins/username)
@@ -14,7 +14,7 @@ SERVICE_TYPE=""
 ENVS=()
 
 usage() {
-  echo "Usage: $0 --service projection|dataproc|drawing2d --env preprod|refactor|preprod,refactor"
+  echo "Usage: $0 --service projection|dataproc|drawing2d|cgm --env preprod|refactor|preprod,refactor"
   echo "       $0 --service projection --env preprod --env refactor"
   exit 1
 }
@@ -41,10 +41,26 @@ done
 
 [[ -n "$SERVICE_TYPE" && ${#ENVS[@]} -gt 0 ]] || usage
 
+# 每项为 collection:serviceName（前端 drawing2d 含不同 collection）
 case "$SERVICE_TYPE" in
-  projection) COLLECTION="python-ai"; SERVICES=("ai-python-auto-dimension" "ai-python-auto-dimension-part") ;;
-  dataproc)   COLLECTION="python-ai"; SERVICES=("ai-algorithm-stp-convert") ;;
-  drawing2d)  COLLECTION="front-web-apps"; SERVICES=("do-web-apps-drawing") ;;
+  projection)
+    TARGETS=(
+      "python-ai:ai-python-auto-dimension"
+      "python-ai:ai-python-auto-dimension-part"
+    )
+    ;;
+  dataproc)
+    TARGETS=("python-ai:ai-algorithm-stp-convert")
+    ;;
+  drawing2d)
+    TARGETS=(
+      "front-web-apps:do-web-apps-drawing"
+      "middleware:middleware-node-queue-server"
+    )
+    ;;
+  cgm)
+    TARGETS=("ops:do-cgm")
+    ;;
   *) echo "Unknown service: $SERVICE_TYPE"; exit 1 ;;
 esac
 
@@ -62,19 +78,23 @@ env_branch() {
   esac
 }
 
-# 展平为任务列表：每个 (环境, serviceName) 一项
+# 展平为任务列表：每个 (环境, collection, serviceName) 一项
 TASK_ENVS=()
 TASK_PROFILES=()
 TASK_BRANCHES=()
+TASK_COLLECTIONS=()
 TASK_SERVICES=()
 
 for env in "${ENVS[@]}"; do
   profile=$(env_profile "$env")
   branch=$(env_branch "$env")
-  for svc in "${SERVICES[@]}"; do
+  for target in "${TARGETS[@]}"; do
+    collection="${target%%:*}"
+    svc="${target#*:}"
     TASK_ENVS+=("$env")
     TASK_PROFILES+=("$profile")
     TASK_BRANCHES+=("$branch")
+    TASK_COLLECTIONS+=("$collection")
     TASK_SERVICES+=("$svc")
   done
 done
@@ -91,6 +111,7 @@ CRUMB_FIELD=$(echo "$CRUMB_JSON" | python3 -c "import sys,json; print(json.load(
 trigger_one() {
   local idx="$1"
   local svc="${TASK_SERVICES[$idx]}"
+  local collection="${TASK_COLLECTIONS[$idx]}"
   local profile="${TASK_PROFILES[$idx]}"
   local branch="${TASK_BRANCHES[$idx]}"
   local env="${TASK_ENVS[$idx]}"
@@ -101,7 +122,7 @@ trigger_one() {
     -u "$JENKINS_USER:$JENKINS_TOKEN" \
     -H "$CRUMB_FIELD: $CRUMB" \
     "$JENKINS_URL/job/$JOB/buildWithParameters" \
-    --data-urlencode "collection=$COLLECTION" \
+    --data-urlencode "collection=$collection" \
     --data-urlencode "serviceName=$svc" \
     --data-urlencode "profile=$profile" \
     --data-urlencode "branch=$branch" \
@@ -122,7 +143,7 @@ trigger_one() {
     exit 1
   fi
   echo "$qid" > "$WORKDIR/queue_$idx"
-  echo "Triggered [$env] $svc (collection=$COLLECTION profile=$profile branch=$branch) -> queue $qid"
+  echo "Triggered [$env] $svc (collection=$collection profile=$profile branch=$branch) -> queue $qid"
 }
 
 resolve_build_no() {
@@ -210,15 +231,16 @@ for env in "${ENVS[@]}"; do
   profile=$(env_profile "$env")
   branch=$(env_branch "$env")
   echo ""
-  echo "[$env] profile=$profile branch=$branch collection=$COLLECTION"
+  echo "[$env] profile=$profile branch=$branch"
   idx=0
   while [[ $idx -lt $TASK_COUNT ]]; do
     if [[ "${TASK_ENVS[$idx]}" == "$env" ]]; then
       svc="${TASK_SERVICES[$idx]}"
+      collection="${TASK_COLLECTIONS[$idx]}"
       build_no=$(cat "$WORKDIR/build_$idx")
       result=$(cat "$WORKDIR/result_$idx")
       display=$(cat "$WORKDIR/display_$idx")
-      echo "  - $svc: build #$build_no | $result | $display"
+      echo "  - $svc (collection=$collection): build #$build_no | $result | $display"
       echo "    console: $JENKINS_URL/job/$JOB/$build_no/console"
       [[ "$result" != "SUCCESS" ]] && FAIL=1
     fi
