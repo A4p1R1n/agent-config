@@ -9,6 +9,8 @@ agent-config/
 ├── catalog.yaml             # skills 分类目录（debug / deploy）
 ├── WORKFLOW.md              # Debug Case → 部署：每步用哪个 skill
 ├── CASE_WALKTHROUGH.md      # 具体 case 教程：提示词 × skill 说明
+├── examples/                # 教程配套产物（如投影线 HTML）
+│   └── 2026-07-04-hole-arc-endangle/
 ├── skills/
 │   ├── debug/               # 调试与排查
 │   │   ├── debug-parametric/      # do_dimension 调试流程

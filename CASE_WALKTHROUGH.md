@@ -114,6 +114,33 @@ case：root/fc894ef68f3b44fc9a4c97ed6144bcf4f212d687.json
 |--|--|
 | **干什么** | 对指定 case 跑参数化投图，生成可交互 HTML：切换查看序列化 `projectionLines` vs CGM/OCC 原始投影边。 |
 | **何时用** | 怀疑「线丢了、重叠、整圆变半圆/3/4 圆」等**画线/序列化**问题，而不是纯 3D 特征识别。 |
+| **本例产物** | 见下方「本例实际生成的 HTML」。 |
+
+#### 本例实际生成的 HTML（`viz-projection-html`）
+
+已对 `root/fc894ef68f3b44fc9a4c97ed6144bcf4f212d687.json` 实跑投图并构建，产物在仓库内：
+
+| 文件 | 说明 |
+|------|------|
+| [examples/.../viz_projection_viewer.html](examples/2026-07-04-hole-arc-endangle/viz_projection_viewer.html) | **可交互 HTML**（默认左视图；顶栏切换「序列化」↔「原始 CGM」） |
+| [examples/.../viz_projection_viewer_left.png](examples/2026-07-04-hole-arc-endangle/viz_projection_viewer_left.png) | 打开 HTML 后的截图（方便在 GitHub 预览） |
+| [examples/.../README.md](examples/2026-07-04-hole-arc-endangle/README.md) | 生成命令与线段统计 |
+
+**预览（左视图 · 序列化源）：**
+
+![左视图投影线 HTML 截图](examples/2026-07-04-hole-arc-endangle/viz_projection_viewer_left.png)
+
+本地打开交互页：
+
+```bash
+open ~/agent-config/examples/2026-07-04-hole-arc-endangle/viz_projection_viewer.html
+```
+
+在页面里建议：
+
+1. 确认 case 栏是 `root/fc894e…json`，视图选 **left**
+2. 切换 **序列化 (output.json)** ↔ **原始投影线 (CGM)**，看孔圆是否一致/缺段
+3. 结合 `output.json` 里同孔弧的 `startAngle` / `endAngle`（本例重跑时仍可见 `endAngle≈449.9999999` 一类浮点）
 
 **对照：若怀疑是斜面/倒角面识别，** 换提示词：
 
@@ -122,9 +149,7 @@ case：root/fc894ef68f3b44fc9a4c97ed6144bcf4f212d687.json
 把这个 case 的斜面和倒角高亮看一下。
 ```
 
-→ Skill **`viz-scene-faces`**：投图后弹 OCC 窗口（斜面绿 / 倒角红）；关窗即结束。
-
-本例根因在弧角度序列化，投影线 HTML 更对口。
+→ Skill **`viz-scene-faces`**：投图后弹 OCC 窗口（斜面绿 / 倒角红）；关窗即结束。本例根因在弧角度序列化，**投影线 HTML 更对口**；OCC 面高亮对本症状帮助不大，故未收录截图。
 
 ---
 
@@ -396,5 +421,6 @@ seed 用 42。
 |------|------|
 | [WORKFLOW.md](WORKFLOW.md) | 步骤 × skill 总表（无长文举例） |
 | [catalog.yaml](catalog.yaml) | skill 分类与路径 |
+| [examples/2026-07-04-hole-arc-endangle/](examples/2026-07-04-hole-arc-endangle/) | **本例** `viz-projection-html` 生成的 HTML + 截图 |
 | `~/agent-config/skills/debug/*` | debug 类 skill 正文 |
 | `~/agent-config/skills/deploy/*` | deploy 类 skill 正文 |
