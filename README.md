@@ -8,6 +8,7 @@
 agent-config/
 ├── catalog.yaml             # skills 分类目录（debug / deploy）
 ├── WORKFLOW.md              # Debug Case → 部署：每步用哪个 skill
+├── CASE_WALKTHROUGH.md      # 具体 case 教程：提示词 × skill 说明
 ├── skills/
 │   ├── debug/               # 调试与排查
 │   │   ├── debug-parametric/      # do_dimension 调试流程
@@ -48,4 +49,4 @@ mkdir skills/debug/my-skill    # 或 skills/deploy/
 ./install.sh   # 重新链接
 ```
 
-分类说明见 [catalog.yaml](catalog.yaml)。完整「排查 → 发包 → 服务上线」步骤与 skill 对照见 [WORKFLOW.md](WORKFLOW.md)。
+分类说明见 [catalog.yaml](catalog.yaml)。完整「排查 → 发包 → 服务上线」步骤与 skill 对照见 [WORKFLOW.md](WORKFLOW.md)。带具体 case、提示词与 skill 介绍的教程见 [CASE_WALKTHROUGH.md](CASE_WALKTHROUGH.md)。
