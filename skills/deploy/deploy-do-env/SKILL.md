@@ -1,6 +1,6 @@
 ---
 name: deploy-do-env
-description: 部署 do 算法开发环境：创建指定名称的 conda 环境（python3.12 + pythonocc-core 7.9.3），安装 pytorch，配置内部 PyPI 源并安装 do 算法全套 SDK。当用户要求部署算法环境、新建 do 环境、配置 occ 环境时使用。
+description: 部署 do 算法开发环境：创建指定名称的 conda 环境（python3.12 + pythonocc-core 7.9.3），安装 pytorch，配置内部 PyPI 源并安装 do_dimension 的 requirement.txt 依赖。当用户要求部署算法环境、新建 do 环境、配置 occ 环境时使用。
 ---
 
 # Deploy DO Env
@@ -41,48 +41,18 @@ conda install -n <env> -c conda-forge pytorch -y
 conda run -n <env> pip config set global.extra-index-url https://hub.designorder.cn/repository/pypi-hosted/simple/
 ```
 
-## 4. 安装 SDK
-
-内部包走内部 PyPI 源，公共包走 PyPI；一条命令装齐：
+## 4. 安装项目依赖
 
 ```bash
-conda run -n <env> pip install \
-  dologging==0.0.4.* \
-  domath \
-  docore \
-  dofeatdef \
-  doservices \
-  dal-sdk \
-  do-view-algorithm \
-  do-coord-agent \
-  do-view-agent \
-  ezdxf \
-  shapely \
-  func-timeout \
-  matplotlib \
-  requests \
-  "aiohttp>=3.9" \
-  pandas \
-  trimesh \
-  sympy \
-  scipy \
-  torch \
-  networkx \
-  open3d
+conda run -n <env> pip install -r <requirement.txt 路径>
 ```
 
-| 包 | 说明 |
-|---|---|
-| `dologging` | 日志 |
-| `domath` | 几何数学 |
-| `docore` | 核心数据模型 |
-| `dofeatdef` | 特征定义 |
-| `doservices` | OSS 等服务 |
-| `dal-sdk` | 数据访问层 |
-| `do-view-algorithm` | 视图算法 |
-| `do-coord-agent` | 姿态 Agent（含 `do-coord-algorithm`） |
-| `do-view-agent` | 视图 Agent |
-| 其余 | 公共依赖（torch、open3d、shapely 等） |
+requirement.txt 的选择顺序：
+
+1. 本机有 do_dimension 仓库时，优先用仓库根目录的 `requirement.txt`（最新）。
+2. 没有仓库时，用本 skill 目录自带的 [requirement.txt](requirement.txt)。
+
+依赖包含内部包（dologging、domath、docore、doservices、dal-sdk 等，走内部源）和公共包（torch、open3d、shapely 等）。
 
 ## 5. 验证
 
@@ -90,8 +60,7 @@ conda run -n <env> pip install \
 conda run -n <env> python -c "
 import OCC; print('pythonocc:', OCC.VERSION)
 import torch; print('torch:', torch.__version__)
-import docore, domath, dologging, dofeatdef; print('do packages: OK')
-import do_view_algorithm, do_coord_agent, do_view_agent; print('agent packages: OK')
+import docore, domath, dologging; print('do packages: OK')
 "
 ```
 

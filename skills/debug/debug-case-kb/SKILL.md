@@ -7,7 +7,7 @@ description: do 算法的 debug 案例知识图谱（do_debug_case_graph 仓库�
 
 - 本地路径：`/Users/jackson/python_ws/cursor_ws/debug_memory`（下称 `$KB`）
 - 远端仓库：`https://git.designorder.cn/jian.wu/do_debug_case_graph.git`（origin，分支 `main`）
-- **Skill 源文件**：`~/agent-config/skills/debug-case-kb/SKILL.md`（改 skill 只改 agent-config，勿改 debug_memory 内备份）
+- **Skill 源文件**：`~/agent-config/skills/debug/debug-case-kb/SKILL.md`（改 skill 只改 agent-config，勿改 debug_memory 内备份）
 - 存储层：`$KB/cases/*.md`（每案例一文件，格式与去重规则见 `$KB/cases/README.md`）
 - 查询层：`python $KB/tools/debug_kb.py <命令>`
 

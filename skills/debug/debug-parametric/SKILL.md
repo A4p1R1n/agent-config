@@ -22,22 +22,25 @@ conda activate py12 && cd /Users/jackson/python_ws/cursor_ws/do_dimension && pyt
 
 ## 场景调试 HTML 归档
 
-投图成功后，`test_parametric.py` 默认自动导出可交互 3D 场景调试页（Features / Relations 高亮），写入本地 `cache/` 并同步到归档仓。
+工具包已独立在归档仓：`~/python_ws/cursor_ws/do_debug_scene_archive/scene_debug_export`（**不在** do_dimension 主包内）。
+
+投图成功后，`test_parametric.py` 通过开关可选调用该工具，写出可交互 3D 场景调试页（Features / Relations 高亮）到本地 `cache/`，并同步到归档仓 case 目录。
 
 | 环境变量 | 默认 | 说明 |
 |----------|------|------|
 | `DO_DEBUG_SCENE_EXPORT` | `1`（开） | 设为 `0` 关闭导出（快速迭代/无头环境建议关掉） |
 | `DO_DEBUG_ARCHIVE_NO_OVERWRITE` | `0` | 设为 `1` 时同日同版本目录追加时间戳，不覆盖 |
-| `DO_DEBUG_ARCHIVE_ROOT` | `~/python_ws/cursor_ws/do_debug_scene_archive` | 本地归档仓根目录 |
+| `DO_DEBUG_ARCHIVE_ROOT` | `~/python_ws/cursor_ws/do_debug_scene_archive` | 归档仓根目录（同时用于 `import scene_debug_export`） |
 | `DO_DEBUG_ARCHIVE_GIT_PUSH` | `1` | 设为 `0` 跳过 git push |
 | `DO_DEBUG_ARCHIVE_OPEN_BROWSER` | `1` | 设为 `0` 不自动打开浏览器 |
+| `DO_DIMENSION_ROOT` | 旁路推断 | 可选；指定 do_dimension 根目录 |
 | `GITLAB_TOKEN` | （空） | Personal Access Token；未设置时只写本地归档，不 push |
 
 - **快速迭代**：只需投图不看 3D 时设 `DO_DEBUG_SCENE_EXPORT=0`（同时不会开浏览器 / 不会 push）。
 - **多场景**：第一期只导出 `project_scene_dict` 的**第一个**场景；多场景时会打 warning。
 - **Git push**：依赖 `GITLAB_TOKEN`；**禁止**把 token 写入仓库、脚本或 `do_agent.env` 等可被提交的文件；若 token 曾在对话中暴露，建议轮换。
-- 首次使用前 clone 归档仓一次：`git clone https://git.designorder.cn/jian.wu/do_debug_scene_archive.git ~/python_ws/cursor_ws/do_debug_scene_archive`
-- 归档失败只记 warning，**不阻断**排查主流程（辅助导出允许 try/except，见下方修复纪律例外）。
+- 工具与归档同仓；说明见归档仓 `README.md`。若本地目录尚无 `.git`，可自行 `git init` / 关联远端。
+- import 失败或归档失败只记 warning，**不阻断**排查主流程（辅助导出允许 try/except，见下方修复纪律例外）。
 
 ## 测试 case 的选择
 

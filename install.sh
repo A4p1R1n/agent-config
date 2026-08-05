@@ -5,19 +5,20 @@ set -e
 REPO_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 # ---- skills：三个工具共用 ----
+# 支持 skills/<category>/<skill-name>/ 二级目录；安装时仍扁平链接到 ~/.cursor/skills/<skill-name>
 SKILL_TARGETS=("$HOME/.cursor/skills" "$HOME/.claude/skills" "$HOME/.codex/skills")
 
 for target in "${SKILL_TARGETS[@]}"; do
     mkdir -p "$target"
 done
 
-for skill in "$REPO_DIR"/skills/*/; do
-    name="$(basename "$skill")"
+while IFS= read -r skill_dir; do
+    name="$(basename "$skill_dir")"
     for target in "${SKILL_TARGETS[@]}"; do
-        ln -sfn "$REPO_DIR/skills/$name" "$target/$name"
-        echo "link: $target/$name -> skills/$name"
+        ln -sfn "$skill_dir" "$target/$name"
+        echo "link: $target/$name -> ${skill_dir#$REPO_DIR/}"
     done
-done
+done < <(find "$REPO_DIR/skills" -mindepth 3 -maxdepth 3 -type f -name 'SKILL.md' -exec dirname {} \; | sort)
 
 # ---- rules：按 agent 分发 ----
 # Cursor: rules/cursor/*.mdc -> ~/.cursor/rules/

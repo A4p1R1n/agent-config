@@ -6,17 +6,28 @@
 
 ```
 agent-config/
-├── skills/                  # 通用 skill，Cursor / Claude Code / Codex 共用
-│   ├── commit-and-push/     # rebase upstream/dev → commit（类型前缀）→ push origin dev
-│   ├── debug-case-kb/       # debug 案例知识图谱（do_debug_case_graph）
-│   ├── debug-parametric/    # do_dimension 调试流程
-│   └── publish-package/     # dodimension 发包流程（手动指定版本号）
+├── catalog.yaml             # skills 分类目录（debug / deploy）
+├── skills/
+│   ├── debug/               # 调试与排查
+│   │   ├── debug-parametric/      # do_dimension 调试流程
+│   │   ├── debug-case-kb/         # debug 案例知识图谱
+│   │   ├── parametric-regression/ # 投图回归对比
+│   │   └── viz-scene-faces/       # OCC 场景面可视化
+│   └── deploy/              # 部署与发版
+│       ├── deploy-do-env/         # conda 算法环境
+│       ├── commit-and-push/       # git 提交推送
+│       ├── publish-package/       # dodimension 发包
+│       ├── algorithm-service-release/  # 算法服务 release/tag
+│       ├── jenkins-service-release/    # Jenkins K8s 部署
+│       └── hotfix-do-dimension/   # 火线修复
 ├── rules/
 │   ├── cursor/              # Cursor rules（.mdc），链接到 ~/.cursor/rules/
-│   ├── claude/              # Claude Code 全局指令（CLAUDE.md），链接到 ~/.claude/CLAUDE.md
-│   └── codex/               # Codex 全局指令（AGENTS.md），链接到 ~/.codex/AGENTS.md
+│   ├── claude/              # Claude Code 全局指令（CLAUDE.md）
+│   └── codex/               # Codex 全局指令（AGENTS.md）
 └── install.sh               # 一键创建所有软链接
 ```
+
+安装时 skill 仍扁平链接到 `~/.cursor/skills/<name>`（与分类目录无关），Agent 通过 skill 名称触发。
 
 ## 安装
 
@@ -30,7 +41,10 @@ cd ~/agent-config && ./install.sh
 ## 新增 skill
 
 ```bash
-mkdir skills/my-skill
-# 编写 skills/my-skill/SKILL.md（含 name/description frontmatter）
+# 按类别放入对应目录
+mkdir skills/debug/my-skill    # 或 skills/deploy/
+# 编写 SKILL.md（含 name/description frontmatter）
 ./install.sh   # 重新链接
 ```
+
+分类说明见 [catalog.yaml](catalog.yaml)。

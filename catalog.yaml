@@ -1,0 +1,43 @@
+# agent-config skills 分类目录 — Agent 可按 category 查找
+version: 1
+
+categories:
+  debug:
+    title: 调试与排查
+    description: 复现问题、可视化、案例归档、回归对比
+    skills:
+      - name: debug-parametric
+        path: skills/debug/debug-parametric
+        summary: do_dimension 参数化投图/标注调试标准流程
+      - name: debug-case-kb
+        path: skills/debug/debug-case-kb
+        summary: debug 案例知识图谱（do_debug_case_graph）
+      - name: parametric-regression
+        path: skills/debug/parametric-regression
+        summary: 投图回归：采样生产 case，对比修复前后无关 diff
+      - name: viz-scene-faces
+        path: skills/debug/viz-scene-faces
+        summary: OCC 窗口高亮场景面（斜面/倒角/集群）
+
+  deploy:
+    title: 部署与发版
+    description: 环境部署、git 提交推送、包发布、服务发版、Jenkins 部署
+    skills:
+      - name: deploy-do-env
+        path: skills/deploy/deploy-do-env
+        summary: 部署 do 算法 conda 环境（OCC + SDK）
+      - name: commit-and-push
+        path: skills/deploy/commit-and-push
+        summary: 提交并推送代码（类型前缀 → rebase → push）
+      - name: publish-package
+        path: skills/deploy/publish-package
+        summary: 发布 dodimension 包到内部 PyPI
+      - name: algorithm-service-release
+        path: skills/deploy/algorithm-service-release
+        summary: 算法服务 release 分支与 tag 发布
+      - name: jenkins-service-release
+        path: skills/deploy/jenkins-service-release
+        summary: Jenkins 触发算法服务镜像构建与 K8s 部署
+      - name: hotfix-do-dimension
+        path: skills/deploy/hotfix-do-dimension
+        summary: do_dimension 火线修复（基于 tag cherry-pick）
