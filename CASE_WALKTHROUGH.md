@@ -122,11 +122,11 @@ case：root/fc894ef68f3b44fc9a4c97ed6144bcf4f212d687.json
 
 | 文件 | 说明 |
 |------|------|
-| [examples/.../viz_projection_viewer.html](examples/2026-07-04-hole-arc-endangle/viz_projection_viewer.html) | **可交互 HTML**（默认左视图；顶栏切换「序列化」↔「原始 CGM」） |
+| [examples/.../viz_projection_viewer.html](examples/2026-07-04-hole-arc-endangle/viz_projection_viewer.html) | **可交互 HTML**（**OCC**；默认左视图；顶栏切换「序列化」↔「原始 OCC」） |
 | [examples/.../viz_projection_viewer_left.png](examples/2026-07-04-hole-arc-endangle/viz_projection_viewer_left.png) | 打开 HTML 后的截图（方便在 GitHub 预览） |
-| [examples/.../README.md](examples/2026-07-04-hole-arc-endangle/README.md) | 生成命令与线段统计 |
+| [examples/.../README.md](examples/2026-07-04-hole-arc-endangle/README.md) | 生成命令与线段统计（OCC） |
 
-**预览（左视图 · 序列化源）：**
+**预览（左视图 · 序列化源 · OCC 投图）：**
 
 ![左视图投影线 HTML 截图](examples/2026-07-04-hole-arc-endangle/viz_projection_viewer_left.png)
 
@@ -138,9 +138,9 @@ open ~/agent-config/examples/2026-07-04-hole-arc-endangle/viz_projection_viewer.
 
 在页面里建议：
 
-1. 确认 case 栏是 `root/fc894e…json`，视图选 **left**
-2. 切换 **序列化 (output.json)** ↔ **原始投影线 (CGM)**，看孔圆是否一致/缺段
-3. 结合 `output.json` 里同孔弧的 `startAngle` / `endAngle`（本例重跑时仍可见 `endAngle≈449.9999999` 一类浮点）
+1. 确认 case 栏是 `root/fc894e…json`，视图选 **left**，raw 源为 **OCC**
+2. 切换 **序列化 (output.json)** ↔ **原始投影线 (OCC)**，看孔圆是否一致/缺段
+3. 结合 `output.json` 里同孔弧的 `startAngle` / `endAngle` 对照浮点整圆问题
 
 **对照：若怀疑是斜面/倒角面识别，** 换提示词：
 
