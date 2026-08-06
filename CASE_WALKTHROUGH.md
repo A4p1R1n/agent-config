@@ -1,9 +1,10 @@
 # 完整案例教程：从排查到上线（Skill × 提示词）
 
 本文用一条**真实已修过的 case**，按对话顺序走完「排查 → 修复 → 发包 → 服务发版 → Jenkins 部署」。  
-每一步写清：**你怎么说（提示词）→ Agent 用哪个 Skill → 这个 Skill 干什么 → 这一步实际在做什么**。
+每一步写清：**你怎么说（提示词）→ Agent 用哪个 Skill → 这个 Skill 干什么 → Agent 实际会回什么**。
 
-> 文中提示词可直接复制改 case；版本号 / tag 请换成你当时指定的值。
+> 文中提示词可直接复制改 case；版本号 / tag 请换成你当时指定的值。  
+> **Agent 输出**：带「实录」的摘自该 case 历史会话；带「示意」的按 skill 规范补写。全文汇编见 [examples/.../agent_outputs.md](examples/2026-07-04-hole-arc-endangle/agent_outputs.md)。
 
 ---
 
@@ -69,11 +70,16 @@ case：root/fc894ef68f3b44fc9a4c97ed6144bcf4f212d687.json
 3. 后台跑 `python scripts/test_parametric.py`，盯日志。
 4. 对照序列化 output：找到孔 `ppEbRZsx` 的 `endAngle=449.999976`。
 
-**你期望听到的结论形态：**
+**Agent 输出（实录 · 根因结论）：**
 
-- 根因：哪个文件、为什么浮点导致前端只画 270°
-- 证据：字段值 / 日志 / 与整圆判定逻辑的关系
-- 建议：修序列化 snap，而不是前端兜底
+> **问题孔**：`ppEbRZsx`，左视图 `(63.11, -166.2)`，r=3（截图里带绿色销孔填充、缺右下象限的那颗）  
+> JSON 里不是 270°，而是「几乎整圆」：`endAngle=**449.999976**`（应为 `450.0`）。  
+> 前端 `endAngle % 360 ≈ 89.999976`，与 `startAngle=90` 不等 → 整圆判定失败 → 按 90°→360° 画 **270°（3/4 圆）**。  
+> 同列其它孔 `endAngle` 恰好是 `450.0`，所以只有个别孔中招。  
+> **根因**：`filtered_curve/util.py` 整圆导出用 `start + math.degrees(2π)` 的浮点误差。  
+> **建议**：近整圆时 snap 到 `start + 360.0`；需要的话我可以直接改并复跑验证——**先等你点头再改代码**。
+
+更完整的表格与前后端算术推导见 [agent_outputs.md · 步骤 1](examples/2026-07-04-hole-arc-endangle/agent_outputs.md#步骤-1--debug-parametric根因结论-实录)。
 
 ---
 
@@ -96,6 +102,17 @@ case：root/fc894ef68f3b44fc9a4c97ed6144bcf4f212d687.json
 | **查法** | `python $KB/tools/debug_kb.py search 孔 endAngle 整圆` 等，命中只看摘要，相关再 `show`。 |
 
 本例若当时库里已有「互补半圆 dedupe」等相似记录，会作为线索提示，但仍要以本次复现为准。
+
+**Agent 输出（实录风格 · 检索转述）：**
+
+```text
+$ python $KB/tools/debug_kb.py search 孔 圆弧 半圆 endAngle
+[12] ...-hole-dedupe-complementary-semicircle-half-circle | serialization | fixed | …
+[ 8] ...-hole-arc-endangle-float-three-quarter-circle | serialization | fixed | …
+     左视图孔 ppEbRZsx projectionLines endAngle=449.999976 前端只渲染 3/4 圆
+```
+
+> 历史上有同款：孔弧序列化整圆 `endAngle` 浮点误差会导致前端画成 3/4 圆；另有一条互补半圆 dedupe 导致半圆。我先从序列化角度导出与 dedupe 两处查起。
 
 ---
 
@@ -141,6 +158,14 @@ open ~/agent-config/examples/2026-07-04-hole-arc-endangle/viz_projection_viewer.
 1. 确认 case 栏是 `root/fc894e…json`，视图选 **left**，raw 源为 **OCC**
 2. 切换 **序列化 (output.json)** ↔ **原始投影线 (OCC)**，看孔圆是否一致/缺段
 3. 结合 `output.json` 里同孔弧的 `startAngle` / `endAngle` 对照浮点整圆问题
+
+**Agent 输出（示意 · 按本仓 OCC 实跑）：**
+
+> 已用 OCC 跑完投影并构建 HTML。  
+> Case `root/fc894e…`，内核 OCC；默认 left。  
+> 序列化 left **20** 段 / OCC raw left **134** 边。  
+> HTML：`examples/2026-07-04-hole-arc-endangle/viz_projection_viewer.html`  
+> 请顶栏切换 **序列化 ↔ 原始投影线 (OCC)**，并对照 `endAngle≈449.999…`。
 
 **对照：若怀疑是斜面/倒角面识别，** 换提示词：
 
@@ -191,6 +216,13 @@ seed 用 42。
 | **干什么（修代码时）** | 只改根因相关代码；禁止吞异常/过滤脏数据冒充修好；修完**必须同 case 复跑**并报告结果。 |
 | **本例结果** | `ppEbRZsx` 的 `endAngle` 变为 `450.0`；前端整圆判定通过。 |
 
+**Agent 输出（实录）：**
+
+> 已改好。  
+> **改动**（`filtered_curve/util.py`）：整圆/近整圆时 `endAngle` 固定为 **`start + 360.0`**，避免 `449.999976`。  
+> 修改前 → 前端画 270°；修改后 → `end=450.0` 识别整圆。  
+> 新增 `tests/test_filter_arc_export_angle.py`，3 个用例已通过。请复跑 `test_parametric` 看左视图该孔是否完整。
+
 ---
 
 ### 步骤 5 —（可选）修后回归对比
@@ -224,6 +256,12 @@ seed 用 42。
 
 归档后可用 id：`2026-07-04-hole-arc-endangle-float-three-quarter-circle`。
 
+**Agent 输出（实录）：**
+
+> 已归档到 `debug_memory`。  
+> **案例 ID**：`2026-07-04-hole-arc-endangle-float-three-quarter-circle`（`serialization` / `fixed`）  
+> **关联 commit**：`4413446f`；`debug_kb.py check` → OK。
+
 ---
 
 ## 第二阶段：合入与发包（dev 主线）
@@ -244,6 +282,12 @@ seed 用 42。
 | **干什么** | 按前缀选类型（本例多为 `fix:`）→ commit → 无关改动 stash → `rebase upstream/dev` → `push origin dev` → **最后再** stash pop。 |
 | **不干什么** | 不改版本号、不 PyPI 上传、不打服务 tag。 |
 
+**Agent 输出（实录）：**
+
+> 已推送到 `origin/dev`。  
+> **Commit**：`4413446f` — `fix: 修复孔投影整圆 endAngle 浮点误差及互补半圆去重丢失`  
+> 含 `util.py`、dedupe filter、两份单测；本地调试改动仍在 stash。
+
 ---
 
 ### 步骤 8 — 发布 dodimension 包
@@ -263,6 +307,10 @@ seed 用 42。
 |--|--|
 | **干什么** | stash `--all` 清空工作区 → rebase `upstream/dev` → 改 `pyproject.toml` + `dodimension/__init__.py` 版本 → 内部再走 **`commit-and-push`** → `python -m build` + twine 上传内部 PyPI → 钉钉通知 → 全程结束再 stash pop。 |
 | **依赖** | 版本号四段式且大于当前；任一步失败即停，不带病上传。 |
+
+**Agent 输出（示意）：**
+
+> 发包完成：rebase 对齐 → 版本 `0.3.6.13` → push → build + twine 成功 → 钉钉已通知 → stash 已 pop。
 
 ---
 
@@ -287,6 +335,10 @@ seed 用 42。
 | **干什么** | 同步 `upstream/dev` → 删旧 release 分支并重建 → 推到 origin/upstream → 打你指定的 **annotated tag** 并推送。 |
 | **注意** | tag 必须你给（如 `v1.2.0`）；这是 **git 发版**，还不部署到 K8s。 |
 
+**Agent 输出（示意）：**
+
+> 算法服务发版完成：已重建 `release`，annotated tag `v1.2.0` 已推 origin/upstream。上 K8s 请再 `/jenkins-service-release`。
+
 ---
 
 ### 步骤 10 — Jenkins 构建镜像并部署
@@ -304,6 +356,10 @@ seed 用 42。
 |--|--|
 | **干什么** | 调 Jenkins Job `build_general_service_image`：构建镜像 + 部署 K8s。**不操作 git**，与步骤 9 分开。 |
 | **本例映射** | 「投图服务」→ `ai-python-auto-dimension` + `ai-python-auto-dimension-part`；「预生产」→ `profile=production`，`branch=release`。 |
+
+**Agent 输出（示意）：**
+
+> 已触发 Jenkins `build_general_service_image`：投图服务双包，`production` / `release`。请到 Jenkins/K8s 确认滚动；本 skill 不操作 git。
 
 其它说法对照：
 
@@ -421,6 +477,6 @@ seed 用 42。
 |------|------|
 | [WORKFLOW.md](WORKFLOW.md) | 步骤 × skill 总表（无长文举例） |
 | [catalog.yaml](catalog.yaml) | skill 分类与路径 |
-| [examples/2026-07-04-hole-arc-endangle/](examples/2026-07-04-hole-arc-endangle/) | **本例** `viz-projection-html` 生成的 HTML + 截图 |
+| [examples/2026-07-04-hole-arc-endangle/](examples/2026-07-04-hole-arc-endangle/) | **本例** OCC 投影线 HTML、截图、**Agent 输出摘录** |
 | `~/agent-config/skills/debug/*` | debug 类 skill 正文 |
 | `~/agent-config/skills/deploy/*` | deploy 类 skill 正文 |

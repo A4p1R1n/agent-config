@@ -7,6 +7,8 @@ Case：`root/fc894ef68f3b44fc9a4c97ed6144bcf4f212d687.json`（左视图孔整圆
 |------|------------|------|
 | `viz_projection_viewer.html` | `viz-projection-html` | 交互投影线查看器；**OCC** 内核；默认左视图；顶栏可切换「序列化」↔「原始 OCC」 |
 | `viz_projection_viewer_left.png` | （HTML 截图） | 打开 HTML 后左视图默认态截图，方便在 Markdown 里预览 |
+| `agent_outputs.md` | （教程） | **各步骤 Agent 实际/示意输出**全文汇编 |
+| `README.md` | — | 生成本目录产物的命令说明 |
 
 ## 本地打开 HTML
 
