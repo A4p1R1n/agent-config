@@ -1,0 +1,68 @@
+{
+  "run_id": "hole-endangle-float-20260704",
+  "note": "示意报告：本例 endAngle snap 修复后，六段指纹预期全 SAME；endAngle 本身不在指纹内。",
+  "pipeline_order": [
+    "features",
+    "scene",
+    "locating",
+    "benchmark",
+    "relations",
+    "dimensions"
+  ],
+  "summary": {
+    "compared": 5,
+    "with_unrelated_changes": 0,
+    "failed_execution": 0,
+    "first_changed_stage_counts": {}
+  },
+  "cases": {
+    "root__fc894ef68f3b44fc9a4c97ed6144bcf4f212d687.json": {
+      "role": "bug_case",
+      "baseline_ok": true,
+      "after_ok": true,
+      "unrelated_change_score": 0,
+      "has_unrelated_changes": false,
+      "first_changed_stage": null,
+      "sections_all_unchanged": true,
+      "bug_specific_check_not_in_fingerprint": {
+        "view": "left",
+        "holeId": "ppEbRZsx",
+        "baseline_endAngle": 449.999976,
+        "after_endAngle": 450.0,
+        "verdict": "FIXED"
+      }
+    },
+    "root__a111111111111111111111111111111111111111.json": {
+      "role": "sampled",
+      "baseline_ok": true,
+      "after_ok": true,
+      "unrelated_change_score": 0,
+      "has_unrelated_changes": false,
+      "first_changed_stage": null
+    },
+    "root__a222222222222222222222222222222222222222.json": {
+      "role": "sampled",
+      "baseline_ok": true,
+      "after_ok": true,
+      "unrelated_change_score": 0,
+      "has_unrelated_changes": false,
+      "first_changed_stage": null
+    },
+    "root__a333333333333333333333333333333333333333.json": {
+      "role": "sampled",
+      "baseline_ok": true,
+      "after_ok": true,
+      "unrelated_change_score": 0,
+      "has_unrelated_changes": false,
+      "first_changed_stage": null
+    },
+    "root__a444444444444444444444444444444444444444.json": {
+      "role": "sampled",
+      "baseline_ok": true,
+      "after_ok": true,
+      "unrelated_change_score": 0,
+      "has_unrelated_changes": false,
+      "first_changed_stage": null
+    }
+  }
+}

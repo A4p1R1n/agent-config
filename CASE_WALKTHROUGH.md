@@ -168,15 +168,6 @@ open ~/agent-config/examples/2026-07-04-hole-arc-endangle/viz_projection_viewer.
 > HTML：`examples/2026-07-04-hole-arc-endangle/viz_projection_viewer.html`  
 > 请顶栏切换 **序列化 ↔ 原始投影线 (OCC)**，并对照 `endAngle≈449.999…`。
 
-**对照：若怀疑是斜面/倒角面识别，** 换提示词：
-
-```text
-/viz-scene-faces
-把这个 case 的斜面和倒角高亮看一下。
-```
-
-→ Skill **`viz-scene-faces`**：投图后弹 OCC 窗口（斜面绿 / 倒角红）；关窗即结束。本例根因在弧角度序列化，**投影线 HTML 更对口**；OCC 面高亮对本症状帮助不大，故未收录截图。
-
 ---
 
 ### 步骤 3 —（可选）修之前采回归 baseline
@@ -186,16 +177,27 @@ open ~/agent-config/examples/2026-07-04-hole-arc-endangle/viz_projection_viewer.
 ```text
 /parametric-regression
 这次要改序列化，修之前先随机采 5 个生产 case 做 baseline，
-seed 用 42。
+seed 用 42；把当前 bug case 也放进 pool。
 ```
 
 **使用的 Skill：`parametric-regression`**
 
 | | |
 |--|--|
-| **干什么** | 从 DTF（或 `test_parametric` 池）抽样 → 修前 `baseline` 跑批 → 修后再跑 → `compare_outputs` 查**与本次修复无关**的特征/语义/标注变化。 |
-| **何时用** | 改动可能波及公共序列化 / 投影过滤逻辑，担心误伤其它件。 |
-| **注意** | 回归脚本会关场景 HTML 导出，加快批量。 |
+| **干什么** | 抽样生产 case → 修前 `baseline` → 修后 `after` → `compare_outputs` 查无关 diff。 |
+| **何时用** | 改动可能波及公共序列化 / 投影过滤，担心误伤其它件。 |
+| **注意** | 回归脚本会关场景 HTML 导出；**必须先有 baseline** 才能对比。 |
+
+**怎么采 / 怎么跑（命令）：**
+
+```bash
+cd ~/.cursor/skills/parametric-regression/scripts
+python3 sample_cases.py --count 5 --seed 42 --days 14 \
+  --out ../runs/pools/20260704-hole-endangle-pool.json
+python3 run_batch.py \
+  --cases ../runs/pools/20260704-hole-endangle-pool.json \
+  --label baseline --run-id hole-endangle-float-20260704
+```
 
 不担心面时可以跳过，直接修 + 同 case 验证。
 
@@ -232,10 +234,69 @@ seed 用 42。
 
 ```text
 /parametric-regression
-用刚才同一个 pool 跑 after，对比有没有无关 diff。
+用刚才同一个 pool、同一个 run-id 跑 after，再 compare_outputs，
+看有没有无关 diff；顺带确认 bug case 的 endAngle 已是 450.0。
 ```
 
 **Skill：** 仍是 **`parametric-regression`**（步骤 3 的后半段）。
+
+#### 如何对比
+
+```bash
+python3 run_batch.py \
+  --cases ../runs/pools/20260704-hole-endangle-pool.json \
+  --label after --run-id hole-endangle-float-20260704
+
+python3 compare_outputs.py \
+  --run-id hole-endangle-float-20260704 \
+  --baseline baseline --after after
+```
+
+`compare_outputs` 按流水线比 **六段指纹**（不是逐像素、也不比投影线角度）：
+
+| 顺序 | 区块 | 含义 |
+|------|------|------|
+| 1 | `features` | 几何/业务对象与实例类型计数 |
+| 2 | `scene` | 图框 / 视图 / 树 |
+| 3 | `locating` | 主定位系 dirs + 特征计数 |
+| 4 | `benchmark` | Benchmark* 关系计数 |
+| 5 | `relations` | 全部关系类型计数 |
+| 6 | `dimensions` | 标注总数 + 视图无关指纹 |
+
+每条 case 输出 `[SAME]` 或 `[CHANGED] score=N first=<最早变化阶段>`；完整结果写入 `comparison_report.json`。
+
+**本例注意：** `endAngle` **不在**上述指纹里。回归全 `SAME` 只说明没伤到特征/定位/关系/标注指纹；bug 是否修好仍要看 `ppEbRZsx` 的 `endAngle`（或 viewer）。
+
+#### 本例对比结果（示意）
+
+详文 + 示意 JSON：
+
+- [regression_compare.md](examples/2026-07-04-hole-arc-endangle/regression_compare.md)
+- [comparison_report.example.json](examples/2026-07-04-hole-arc-endangle/comparison_report.example.json)
+
+终端形态：
+
+```text
+{
+  "compared": 5,
+  "with_unrelated_changes": 0,
+  "failed_execution": 0,
+  "first_changed_stage_counts": {}
+}
+[SAME] root__fc894ef68f3b44fc9a4c97ed6144bcf4f212d687.json score=0
+[SAME] root__a111….json score=0
+[SAME] root__a222….json score=0
+[SAME] root__a333….json score=0
+[SAME] root__a444….json score=0
+```
+
+**Agent 输出（示意）：**
+
+> 回归对比完成（`hole-endangle-float-20260704`）。  
+> **summary**：`compared=5`，`with_unrelated_changes=0` → 全部 `[SAME] score=0`。  
+> 六段指纹无无关 diff。  
+> **bug case 专有验证**：`ppEbRZsx` 左视图 `endAngle` baseline `449.999976` → after `450.0`（FIXED）。  
+> 结论：修复命中症状，抽样生产件指纹未变，改动面可控。
 
 ---
 
@@ -478,6 +539,6 @@ seed 用 42。
 |------|------|
 | [WORKFLOW.md](WORKFLOW.md) | 步骤 × skill 总表（无长文举例） |
 | [catalog.yaml](catalog.yaml) | skill 分类与路径 |
-| [examples/2026-07-04-hole-arc-endangle/](examples/2026-07-04-hole-arc-endangle/) | **本例** OCC 投影线 HTML、截图、**Agent 输出摘录** |
+| [examples/2026-07-04-hole-arc-endangle/](examples/2026-07-04-hole-arc-endangle/) | **本例** OCC HTML、截图、Agent 输出、**回归对比示例** |
 | `~/agent-config/skills/debug/*` | debug 类 skill 正文 |
 | `~/agent-config/skills/deploy/*` | deploy 类 skill 正文 |

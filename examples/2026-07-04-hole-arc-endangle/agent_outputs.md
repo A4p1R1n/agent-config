@@ -116,6 +116,31 @@ Agent 向用户转述时的话术 · 实录风格：
 
 ---
 
+## 步骤 3 / 5 · `parametric-regression` 对比 · 示意（本例预期）
+
+完整说明见 [regression_compare.md](regression_compare.md)；示意 JSON：[comparison_report.example.json](comparison_report.example.json)。
+
+```text
+{
+  "compared": 5,
+  "with_unrelated_changes": 0,
+  "failed_execution": 0,
+  "first_changed_stage_counts": {}
+}
+[SAME] root__fc894ef68f3b44fc9a4c97ed6144bcf4f212d687.json score=0
+[SAME] root__a111….json score=0
+…（其余抽样 case 均为 SAME）
+```
+
+> 回归对比完成（`hole-endangle-float-20260704`）。  
+> **summary**：`compared=5`，`with_unrelated_changes=0` → 全部 `[SAME] score=0`。  
+> 六段指纹（features→dimensions）无无关 diff。  
+> **bug case 专有验证**（不在指纹内）：`ppEbRZsx` 左视图 `endAngle`  
+> baseline `449.999976` → after `450.0`（FIXED）。  
+> 结论：修复命中症状，抽样生产件指纹未变，改动面可控。
+
+---
+
 ## 步骤 4 · 修复完成 · 实录
 
 ```markdown
