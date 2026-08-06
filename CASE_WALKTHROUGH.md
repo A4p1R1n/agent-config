@@ -141,6 +141,7 @@ $ python $KB/tools/debug_kb.py search 孔 圆弧 半圆 endAngle
 |------|------|
 | [examples/.../viz_projection_viewer.html](examples/2026-07-04-hole-arc-endangle/viz_projection_viewer.html) | **可交互 HTML**（**OCC**；默认左视图；顶栏切换「序列化」↔「原始 OCC」） |
 | [examples/.../viz_projection_viewer_left.png](examples/2026-07-04-hole-arc-endangle/viz_projection_viewer_left.png) | 打开 HTML 后的截图（方便在 GitHub 预览） |
+| [examples/.../agent_outputs.md](examples/2026-07-04-hole-arc-endangle/agent_outputs.md) | **各步骤 Agent 实录/示意输出**全文 |
 | [examples/.../README.md](examples/2026-07-04-hole-arc-endangle/README.md) | 生成命令与线段统计（OCC） |
 
 **预览（左视图 · 序列化源 · OCC 投图）：**
