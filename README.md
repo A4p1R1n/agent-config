@@ -25,6 +25,7 @@ agent-config/
 │   │   ├── jenkins-service-release/    # Jenkins K8s 部署
 │   │   └── hotfix-do-dimension/   # 火线修复
 │   └── common/              # 通用（与具体项目无关）
+│       ├── paper-recommend/       # 论文推荐 + 锐评 + Obsidian 知识图谱 + 离线 HTML
 │       ├── github-weekly-hot/     # GitHub 周榜锐评 → HTML
 │       └── github-repo-recommend/ # 关键字找开源仓库选型 → HTML
 ├── rules/

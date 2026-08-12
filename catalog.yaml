@@ -47,8 +47,11 @@ categories:
 
   common:
     title: 通用
-    description: 与具体项目无关的通用能力：开源选型、榜单跟踪、外部信息抓取
+    description: 与具体项目无关的通用能力：开源选型、论文调研、榜单跟踪
     skills:
+      - name: paper-recommend
+        path: skills/common/paper-recommend
+        summary: 按兴趣推荐 5 篇论文（摘要/锐评/对比历史），沉淀为 Obsidian 论文库 + 实体知识图谱 + 离线交互 HTML
       - name: github-weekly-hot
         path: skills/common/github-weekly-hot
         summary: GitHub Trending 周榜锐评（链接 + 介绍 + 数据支撑评价 → HTML）
