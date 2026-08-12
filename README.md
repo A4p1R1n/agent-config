@@ -25,7 +25,8 @@ agent-config/
 │   │   ├── jenkins-service-release/    # Jenkins K8s 部署
 │   │   └── hotfix-do-dimension/   # 火线修复
 │   └── info/                # 资讯与调研
-│       └── github-weekly-hot/     # GitHub 周榜锐评 → HTML
+│       ├── github-weekly-hot/     # GitHub 周榜锐评 → HTML
+│       └── github-repo-recommend/ # 关键字找开源仓库选型 → HTML
 ├── rules/
 │   ├── cursor/              # Cursor rules（.mdc），链接到 ~/.cursor/rules/
 │   ├── claude/              # Claude Code 全局指令（CLAUDE.md）

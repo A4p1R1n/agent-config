@@ -1,0 +1,96 @@
+{
+  "keywords": "vector database",
+  "summary": "108 个候选里真正是「向量数据库」的不到十个，其余多是 RAG 框架给自己贴了 vector-database 标签。真要选型，先分清三档：Qdrant / Milvus / Weaviate 是有多年沉淀的服务端选手，zvec / HelixDB 是热度远超工程沉淀的新面孔，Manticore / ObjectBox 则是别的品类顺手补了向量能力。多数团队从 Qdrant 起步，规模真上来了再谈 Milvus。",
+  "picks": [
+    {
+      "full_name": "qdrant/qdrant",
+      "verdict": "首选",
+      "one_liner": "Rust 写的向量检索引擎，单二进制起服务，API 干净",
+      "review": "全场唯一 README 不到 12k 字符、不挂任何营销徽章的头部项目。186 个贡献者、90 天 743 次提交，工程节奏稳。它把「别的都不做」当成了产品决策。",
+      "fit": "绝大多数团队的第一选择：想尽快跑起来、不想为一个向量库拖进一套分布式组件",
+      "avoid": "需要单集群扛十亿级向量、或必须要多租户强隔离的场景，Milvus 更成熟",
+      "alternative_to": "比 Milvus 轻得多，代价是超大规模下的分片与调度能力不如它"
+    },
+    {
+      "full_name": "milvus-io/milvus",
+      "verdict": "首选",
+      "one_liner": "分布式向量数据库的事实标准，功能覆盖最全",
+      "review": "45.6k star、324 个贡献者、7 年历史，是这个品类里唯一称得上「工业级」的。代价写在架构里：完整集群要拖 etcd、对象存储、消息队列，1278 个 open issue 也是规模的副作用。",
+      "fit": "十亿级向量、需要水平扩展和多副本，且有人力维护一套分布式系统",
+      "avoid": "只有几百万向量还上集群版，运维成本会吃掉全部收益——那种量级用 Milvus Lite 或 Qdrant",
+      "alternative_to": "能力上位替代 Qdrant，但部署复杂度不在一个量级"
+    },
+    {
+      "full_name": "weaviate/weaviate",
+      "verdict": "值得用",
+      "one_liner": "对象 + 向量一体存储，混合检索和模块化生态做得最深",
+      "review": "90 天 2781 次提交、累计 569 个 release，是全场发布节奏最猛的。好处是缺什么很快就有；坏处是配置面铺得太开，模块、向量化器、schema 三层概念要一起学。",
+      "fit": "需要结构化过滤 + 向量混合检索，或想直接用内置向量化模块省掉一层服务",
+      "avoid": "只想要一个纯粹的 ANN 索引服务，Weaviate 的概念负担明显偏重",
+      "alternative_to": "混合检索比 Qdrant 完整，上手曲线也更陡"
+    },
+    {
+      "full_name": "manticoresoftware/manticoresearch",
+      "verdict": "看场景",
+      "one_liner": "老牌全文检索引擎补上了向量和混合检索，走 SQL / MySQL 协议",
+      "review": "9 年积累的 BM25 底子，向量是后加的能力而非立身之本。真正需要注意的是 GPL-3.0——这是全场唯一的强 copyleft，闭源商业集成前先找法务，别等上线才发现。",
+      "fit": "已有全文检索需求、团队熟悉 SQL，想用一套引擎同时吃下关键词和向量",
+      "avoid": "纯向量负载，或不能接受 GPL-3.0 的商业产品",
+      "alternative_to": "混合检索的另一条路：从全文侧长出向量，而非从向量侧长出全文"
+    },
+    {
+      "full_name": "alibaba/zvec",
+      "verdict": "观望",
+      "one_liner": "进程内嵌入式向量库，对标 SQLite 的形态",
+      "review": "250 天冲到 15.4k star，但只有 31 个贡献者、10 个 release，README 挂着 Trendshift 徽章——热度和工程沉淀严重不匹配。方向没问题，时间还不够。",
+      "fit": "本地 / 边缘场景想省掉一个独立服务，且能接受接口后续变动",
+      "avoid": "生产核心链路。它还没有经历过足够长的线上考验",
+      "alternative_to": "嵌入式定位，和 Qdrant / Milvus 不是竞品关系"
+    },
+    {
+      "full_name": "HelixDB/helix-db",
+      "verdict": "观望",
+      "one_liner": "图 + 向量一体的 OLTP 数据库，构建在对象存储上",
+      "review": "两年发了 182 个 release，平均四天一个——迭代凶但也说明接口还在漂。23 个贡献者、只剩 5 个 open issue，与其说是维护得好，不如说用的人还不多。",
+      "fit": "关系遍历和向量检索都要、又不想拼两套系统的探索性项目",
+      "avoid": "需要 API 稳定性承诺的生产系统",
+      "alternative_to": "图 + 向量的组合暂时没有成熟替代品，这既是机会也是风险"
+    },
+    {
+      "full_name": "infiniflow/infinity",
+      "verdict": "观望",
+      "one_liner": "面向 LLM 应用的 AI-native 数据库，稠密 / 稀疏 / 张量 / 全文四路混合检索",
+      "review": "四年项目、57 个 release，技术路线是这批里最有想法的。但近 90 天只有 35 次提交，比同体量项目低一个数量级，投入明显在收缩——用之前先去 commit 记录里确认一下还有没有人在管。",
+      "fit": "需要 tensor / 多向量重排这类特殊检索能力，且愿意自己兜底",
+      "avoid": "依赖上游持续维护的长期项目",
+      "alternative_to": "混合检索能力比 Qdrant 丰富，但活跃度差了一截"
+    },
+    {
+      "full_name": "objectbox/objectbox-java",
+      "verdict": "看场景",
+      "one_liner": "Android / JVM 端上数据库，向量检索是其中一项能力",
+      "review": "严格说它不是向量数据库，是移动端 NoSQL 顺带做了向量。真正的风险是只有 8 个贡献者——全场最少，且核心闭源、公司主导，公司不做了就没有社区能接手。",
+      "fit": "Android / JVM 端上做本地语义检索，且已经在用 ObjectBox 存数据",
+      "avoid": "服务端。这个品类里它和其他七个不是一回事",
+      "alternative_to": "端上场景的对手是 zvec 这类嵌入式库，不是 Milvus"
+    }
+  ],
+  "dropped": [
+    {
+      "full_name": "Mintplex-Labs/anything-llm",
+      "reason": "本地优先的 LLM / agent 应用平台，自己打了 vector-database 标签，但它是向量库的使用方而非实现方。64.6k star 只说明它作为应用很成功。"
+    },
+    {
+      "full_name": "run-llama/llama_index",
+      "reason": "RAG 编排框架，向下对接各家向量库。选它和选向量数据库是两个决策。"
+    },
+    {
+      "full_name": "VectifyAI/PageIndex",
+      "reason": "主张 vectorless、基于推理的检索，却给自己打了 vector-database topic——恰好是这次检索里最讽刺的一个误报。"
+    },
+    {
+      "full_name": "oceanbase/oceanbase",
+      "reason": "通用分布式关系数据库，向量只是 AI workload 里的一项附加能力。为了向量检索引入一套 HTAP 数据库是本末倒置。"
+    }
+  ]
+}

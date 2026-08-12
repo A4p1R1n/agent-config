@@ -1,0 +1,740 @@
+{
+  "generated_at": "2026-08-12T16:57:20Z",
+  "keywords": "agent sandbox",
+  "language": "",
+  "sources": [
+    {
+      "source": "best-match",
+      "query": "agent sandbox archived:false fork:false pushed:>=2025-08-12 stars:>=50",
+      "hits": 50
+    },
+    {
+      "source": "topic",
+      "query": "topic:agent-sandbox archived:false fork:false pushed:>=2025-08-12 stars:>=50",
+      "hits": 14
+    },
+    {
+      "source": "stars",
+      "query": "agent sandbox archived:false fork:false pushed:>=2025-08-12 stars:>=50",
+      "hits": 50
+    }
+  ],
+  "pool_size": 82,
+  "weights": {
+    "relevance": 30.0,
+    "maintenance": 25.0,
+    "team": 15.0,
+    "popularity": 15.0,
+    "hygiene": 15.0
+  },
+  "target_count": 8,
+  "shortlist_count": 12,
+  "repos": [
+    {
+      "full_name": "opensandbox-group/OpenSandbox",
+      "owner": "opensandbox-group",
+      "url": "https://github.com/opensandbox-group/OpenSandbox",
+      "homepage": "https://open-sandbox.ai",
+      "description": "Secure, Fast, and Extensible Sandbox runtime for AI agents.",
+      "language": "Python",
+      "topics": [
+        "ai",
+        "ai-agent",
+        "ai-infra",
+        "kubernetes",
+        "sandbox"
+      ],
+      "stars": 12495,
+      "forks": 1052,
+      "open_issues": 153,
+      "license": "Apache-2.0",
+      "owner_type": "Organization",
+      "created_at": "2025-12-17T08:41:09Z",
+      "pushed_at": "2026-08-12T14:31:49Z",
+      "days_since_push": 0,
+      "age_days": 238,
+      "found_by": [
+        "best-match",
+        "stars"
+      ],
+      "search_rank": {
+        "best-match": 0.1,
+        "stars": 0.08
+      },
+      "score": 98.7,
+      "score_breakdown": {
+        "relevance": 30.0,
+        "maintenance": 25.0,
+        "popularity": 13.7,
+        "hygiene": 15.0,
+        "team": 15.0
+      },
+      "contributors_count": 84,
+      "commits_last_90d": 897,
+      "readme_excerpt": "<h1>OpenSandbox</h1>\n\n  \n    <a href=\"https://trendshift.io/repositories/21828\" target=\"_blank\"></a>\n  \n\n  <a href=\"https://github.com/opensandbox-group/OpenSandbox\"></a>\n  <a href=\"https://www.bestpractices.dev/projects/12588\"></a>\n  <a href=\"https://landscape.cncf.io/?item=orchestration-management--scheduling-orchestration--opensandbox\"></a>\n  <a href=\"https://discord.gg/g7FuPs8YeD\"></a>\n  <a href=\"https://qr.dingtalk.com/action/joingroup?code=v1,k1,A4Bgl5q1I1eNU/r33D18YFNrMY108aFF38V+r19RJOM=&_dt_no_comment=1&origin=11\"></a>\n  <a href=\"https://github.com/opensandbox-group/OpenSandbox/actions\"></a>\n  <a href=\"https://github.com/opensandbox-group/OpenSandbox/actions\"></a>\n\n  <hr />\n\nOpenSandbox is a **general-purpose sandbox platform** for AI applications, offering multi-language SDKs, unified sandbox APIs, and Docker/Kubernetes runtimes for scenarios like Coding Agents, GUI Agents, Agent Evaluation, AI Code Execution, and RL Training.\n\n## Features\n\n- 🧩 **SDKs, CLI, and MCP**: Provides multi-language SDKs, the osb CLI, and MCP server integration for sandbox creation, command execution, and file operations. See [SDKs](#sdks), [CLI](#cli), and [MCP](#mcp).\n- 📜 **Sandbox Protocol**: Defines sandbox lifecycle management APIs and sandbox execution APIs so you can extend custom sandbox runtimes. See [API specs](specs/README.md).\n- 🚀 **Sandbox Runtime**: Built-in lifecycle management supporting Docker and high-performance Kubernetes runtime, enabling both local runs and large-scale",
+      "readme_chars": 14898,
+      "promo_markers": [
+        "discord-funnel",
+        "trendshift"
+      ],
+      "release_count": 168,
+      "stars_per_contributor": 149
+    },
+    {
+      "full_name": "HolmesGPT/holmesgpt",
+      "owner": "HolmesGPT",
+      "url": "https://github.com/HolmesGPT/holmesgpt",
+      "homepage": "https://holmesgpt.dev/",
+      "description": "SRE Agent - CNCF Sandbox Project",
+      "language": "Python",
+      "topics": [
+        "aiops",
+        "chatbot",
+        "chatops",
+        "devops",
+        "devops-tools",
+        "incident",
+        "incident-management",
+        "incident-response",
+        "jira",
+        "kubernetes",
+        "llm",
+        "llm-agent",
+        "llm-framework",
+        "llms",
+        "monitoring",
+        "observability",
+        "prometheus",
+        "site-reliability-engineering",
+        "slack",
+        "sre"
+      ],
+      "stars": 3043,
+      "forks": 434,
+      "open_issues": 382,
+      "license": "Apache-2.0",
+      "owner_type": "Organization",
+      "created_at": "2024-05-30T13:27:10Z",
+      "pushed_at": "2026-08-12T13:29:44Z",
+      "days_since_push": 0,
+      "age_days": 804,
+      "found_by": [
+        "best-match",
+        "stars"
+      ],
+      "search_rank": {
+        "best-match": 0.12,
+        "stars": 0.44
+      },
+      "score": 96.6,
+      "score_breakdown": {
+        "relevance": 30.0,
+        "maintenance": 25.0,
+        "popularity": 11.6,
+        "hygiene": 15.0,
+        "team": 15.0
+      },
+      "contributors_count": 71,
+      "commits_last_90d": 139,
+      "readme_excerpt": "<h1 align=\"center\">HolmesGPT — The CNCF SRE Agent</h1>\n\n  \n    <a href=\"#installation\"><strong>Installation</strong></a> |\n    <a href=\"https://holmesgpt.dev/\"><strong>Docs</strong></a> |\n    <a href=\"https://deepwiki.com/HolmesGPT/holmesgpt\"></a>\n  \n\nOpen-source AI agent for investigating production incidents and finding root causes. Works with any stack — Kubernetes, VMs, cloud providers, databases, and SaaS platforms. We are a [Cloud Native Computing Foundation](https://www.cncf.io/) sandbox project. Originally created by [Robusta.Dev](http://robusta.dev), with major contributions from [Microsoft](https://microsoft.com/).\n\n## New: Operator Mode — Find Problems 24/7 in the Background\n\nMost AI agents are great at troubleshooting problems, but still need a human to notice something is wrong and trigger an investigation. [Operator mode](https://holmesgpt.dev/operator/) fixes that — HolmesGPT runs in the background 24/7, spots problems before your customers notice, and messages you in Slack with the fix. Connect the [GitHub integration](https://holmesgpt.dev/data-sources/builtin-toolsets/github-mcp/) and it can even open PRs to fix what it finds.\n\nWhile the operator itself runs in Kubernetes, health checks can query any data source Holmes is connected to — VMs, cloud services, databases, SaaS platforms, and more.\n\n- **[Deployment verification](https://holmesgpt.dev/operator/deployment-verification/)** — Deploy a health check alongside your app to verify the new version is healt",
+      "readme_chars": 16991,
+      "promo_markers": [],
+      "release_count": 143,
+      "stars_per_contributor": 43
+    },
+    {
+      "full_name": "nolabs-ai/nono",
+      "owner": "nolabs-ai",
+      "url": "https://github.com/nolabs-ai/nono",
+      "homepage": "https://nono.sh",
+      "description": "Sandbox any AI agent in seconds - zero setup, zero latency.",
+      "language": "Rust",
+      "topics": [
+        "agent-sandbox",
+        "agent-security",
+        "ai-agent-sandbox",
+        "ai-agent-security",
+        "ai-agents",
+        "ai-security",
+        "ai-security-tool",
+        "code-execution",
+        "llm-security",
+        "mcp",
+        "mcp-security",
+        "security",
+        "sigstore",
+        "supply-chain-security",
+        "zero-trust"
+      ],
+      "stars": 3633,
+      "forks": 240,
+      "open_issues": 136,
+      "license": "Apache-2.0",
+      "owner_type": "Organization",
+      "created_at": "2026-01-31T09:25:45Z",
+      "pushed_at": "2026-08-12T10:00:41Z",
+      "days_since_push": 0,
+      "age_days": 193,
+      "found_by": [
+        "best-match",
+        "stars",
+        "topic"
+      ],
+      "search_rank": {
+        "best-match": 0.32,
+        "topic": 0.0,
+        "stars": 0.4
+      },
+      "score": 95.1,
+      "score_breakdown": {
+        "relevance": 28.2,
+        "maintenance": 25.0,
+        "popularity": 11.9,
+        "hygiene": 15.0,
+        "team": 15.0
+      },
+      "contributors_count": 86,
+      "commits_last_90d": 557,
+      "readme_excerpt": "Built by the team that brought you\n  <a href=\"https://sigstore.dev\"><strong>Sigstore</strong></a>\n  <br/>\n  <sub>The standard for secure software attestation, used by PyPI, npm, brew, and Maven Central</sub>\n\n  <a href=\"https://opensource.org/licenses/Apache-2.0\"></a>\n  <a href=\"https://github.com/nolabs-ai/nono/actions/workflows/ci.yml\"></a>\n  <a href=\"https://www.bestpractices.dev/projects/13332\"></a>\n  <a href=\"https://docs.nono.sh\"></a>\n\n  <a href=\"https://discord.gg/G6qDa7cC7x\">\n    \n  </a>\n   <a href=\"https://nolabs.ai/careers\">\n      \n  </a>\n  <a href=\"https://github.com/marketplace/actions/agent-sign\">\n    \n  </a>\n\n---\n\n> [!NOTE]\n> In the lead-up to a 1.0 release, APIs are stabilizing. API changes may still occur where necessary, but will be kept to a minimum.\n\n> [!IMPORTANT]\n> **Organization migration:** The official nono registry namespace has moved from `always-further` to `nolabs-ai`. Update any references in your scripts, profiles, and CI.\n> If you already have a pack installed under the old namespace, remove it first before pulling from the new one:\n> ```bash\n> nono remove always-further/claude\n> nono pull nolabs-ai/claude\n> ```\n> The old namespace will be retired — migrate now.\n\n**Run AI agents in a zero latency sandbox in seconds and with zero setup** — *Claude Code, Codex, Pi, CoPilot, Hermes, OpenCode, OpenClaw* and more — nono gets you up and running within seconds, with no daemon, no container, no VM, and no disk space usage. Out of the box, nono enforces ",
+      "readme_chars": 8384,
+      "promo_markers": [
+        "discord-funnel"
+      ],
+      "release_count": 105,
+      "stars_per_contributor": 42
+    },
+    {
+      "full_name": "microsoft/agent-governance-toolkit",
+      "owner": "microsoft",
+      "url": "https://github.com/microsoft/agent-governance-toolkit",
+      "homepage": "",
+      "description": "AI Agent Governance Toolkit — Policy enforcement, zero-trust identity, execution sandboxing, and reliability engineering for autonomous AI agents. Covers 10/10 OWASP Agentic Top 10.",
+      "language": "Python",
+      "topics": [
+        "agent-framework",
+        "ai-agents",
+        "ai-safety",
+        "compliance",
+        "governance",
+        "microsoft",
+        "owasp",
+        "policy-engine",
+        "python",
+        "security",
+        "trust",
+        "zero-trust"
+      ],
+      "stars": 5891,
+      "forks": 1026,
+      "open_issues": 201,
+      "license": "MIT",
+      "owner_type": "Organization",
+      "created_at": "2026-03-02T22:11:47Z",
+      "pushed_at": "2026-08-12T03:38:28Z",
+      "days_since_push": 0,
+      "age_days": 162,
+      "found_by": [
+        "best-match",
+        "stars"
+      ],
+      "search_rank": {
+        "best-match": 0.22,
+        "stars": 0.26
+      },
+      "score": 94.6,
+      "score_breakdown": {
+        "relevance": 27.0,
+        "maintenance": 25.0,
+        "popularity": 12.6,
+        "hygiene": 15.0,
+        "team": 15.0
+      },
+      "contributors_count": 128,
+      "commits_last_90d": 923,
+      "readme_excerpt": "🌍 [English](/README.md) | [日本語](./docs/i18n/README.ja.md) | [简体中文](./docs/i18n/README.zh-CN.md) | [한국어](./docs/i18n/README.ko.md)\n\n![Agent Governance Toolkit](docs/assets/readme-banner.svg)\n\n# Agent Governance Toolkit\n\n### Ship agents to production without losing sleep\n\n  <a href=\"https://microsoft.github.io/agent-governance-toolkit\">\n    \n  </a>\n\n  <strong>\n    🚀 <a href=\"#quick-start\">Quick Start</a> ·\n    📋 <a href=\"#specifications\">Specifications</a> ·\n    📦 <a href=\"https://pypi.org/project/agent-governance-toolkit/\">PyPI</a> ·\n    📝 <a href=\"CHANGELOG.md\">Changelog</a>\n  </strong>\n\n[![CI](https://github.com/microsoft/agent-governance-toolkit/actions/workflows/ci.yml/badge.svg)](https://github.com/microsoft/agent-governance-toolkit/actions/workflows/ci.yml)\n[![Discord](https://dcbadge.limes.pink/api/server/TxMRqY3pFr?style=flat)](https://discord.gg/TxMRqY3pFr)\n[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)\n[![PyPI version](https://img.shields.io/pypi/v/agent-governance-toolkit?label=PyPI)](https://pypi.org/project/agent-governance-toolkit/)\n[![npm](https://img.shields.io/npm/v/%40microsoft/agent-governance-sdk?label=npm)](https://www.npmjs.com/package/@microsoft/agent-governance-sdk)\n[![NuGet](https://img.shields.io/nuget/v/Microsoft.AgentGovernance?label=NuGet)](https://www.nuget.org/packages/Microsoft.AgentGovernance)\n[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/microsoft/agent-governance-toolkit/badge)](https://s",
+      "readme_chars": 25713,
+      "promo_markers": [
+        "discord-funnel"
+      ],
+      "release_count": 19,
+      "stars_per_contributor": 46
+    },
+    {
+      "full_name": "kubernetes-sigs/agent-sandbox",
+      "owner": "kubernetes-sigs",
+      "url": "https://github.com/kubernetes-sigs/agent-sandbox",
+      "homepage": "https://agent-sandbox.sigs.k8s.io",
+      "description": "agent-sandbox enables easy management of isolated, stateful, singleton workloads, ideal for use cases like AI agent runtimes.",
+      "language": "Go",
+      "topics": [],
+      "stars": 3491,
+      "forks": 443,
+      "open_issues": 248,
+      "license": "Apache-2.0",
+      "owner_type": "Organization",
+      "created_at": "2025-08-12T04:55:05Z",
+      "pushed_at": "2026-08-12T13:21:36Z",
+      "days_since_push": 0,
+      "age_days": 365,
+      "found_by": [
+        "best-match",
+        "stars"
+      ],
+      "search_rank": {
+        "best-match": 0.08,
+        "stars": 0.42
+      },
+      "score": 92.3,
+      "score_breakdown": {
+        "relevance": 30.0,
+        "maintenance": 25.0,
+        "popularity": 11.8,
+        "hygiene": 10.5,
+        "team": 15.0
+      },
+      "contributors_count": 118,
+      "commits_last_90d": 319,
+      "readme_excerpt": "<h1>Agent Sandbox</h1>\n\n  <a href=\"https://github.com/kubernetes-sigs/agent-sandbox/releases\"></a>\n  <a href=\"LICENSE\"></a>\n\n[Website](https://agent-sandbox.sigs.k8s.io) · [Docs](https://agent-sandbox.sigs.k8s.io/docs/) · [DeepWiki](https://deepwiki.com/kubernetes-sigs/agent-sandbox) · [Getting Started](https://agent-sandbox.sigs.k8s.io/docs/getting_started/) · [Examples](examples/) · [Roadmap](roadmap.md)\n\n**agent-sandbox enables easy management of isolated, stateful, singleton workloads, ideal for use cases like AI agent runtimes.**\n\nThis project is developing a `Sandbox` Custom Resource Definition (CRD) and controller for Kubernetes, under the umbrella of [SIG Apps](https://github.com/kubernetes/community/tree/master/sig-apps). The goal is to provide a declarative, standardized API for managing workloads that require the characteristics of a long-running, stateful, singleton container with a stable identity, much like a lightweight, single-container VM experience built on Kubernetes primitives.\n\n> [!NOTE]\n> **Scope:** Agent Sandbox is a *sandbox orchestrator*. It delegates low-level container isolation to secure \"Sandbox Runtimes\" (like gVisor or Kata Containers) by managing Pods configured to use these runtimes (via `RuntimeClass`).\n\n## Overview\n\n### Core: Sandbox\n\nThe `Sandbox` CRD is the core of agent-sandbox. It provides a declarative API for managing a single, stateful pod with a stable identity and persistent storage. This is useful for workloads that don't fit well ",
+      "readme_chars": 11974,
+      "promo_markers": [],
+      "release_count": 17,
+      "stars_per_contributor": 30
+    },
+    {
+      "full_name": "TencentCloud/CubeSandbox",
+      "owner": "TencentCloud",
+      "url": "https://github.com/TencentCloud/CubeSandbox",
+      "homepage": "https://cubesandbox.com",
+      "description": "Instant, Concurrent, Secure & Lightweight Sandbox for AI Agents.",
+      "language": "Rust",
+      "topics": [
+        "agents",
+        "container",
+        "sandbox"
+      ],
+      "stars": 11058,
+      "forks": 1021,
+      "open_issues": 116,
+      "license": "NOASSERTION",
+      "owner_type": "Organization",
+      "created_at": "2026-04-10T03:00:31Z",
+      "pushed_at": "2026-08-12T13:07:53Z",
+      "days_since_push": 0,
+      "age_days": 124,
+      "found_by": [
+        "best-match",
+        "stars"
+      ],
+      "search_rank": {
+        "best-match": 0.06,
+        "stars": 0.1
+      },
+      "score": 91.0,
+      "score_breakdown": {
+        "relevance": 30.0,
+        "maintenance": 25.0,
+        "popularity": 13.5,
+        "hygiene": 7.5,
+        "team": 15.0
+      },
+      "contributors_count": 72,
+      "commits_last_90d": 602,
+      "readme_excerpt": "<h1 align=\"center\">CubeSandbox</h1>\n\n  <strong>Instant, Concurrent, Secure & Lightweight Sandbox Service for AI Agents</strong>\n\n  <a href=\"https://trendshift.io/repositories/26338?utm_source=repository-badge&amp;utm_medium=badge&amp;utm_campaign=badge-repository-26338\" target=\"_blank\" rel=\"noopener noreferrer\"></a>\n\n  <a href=\"https://github.com/tencentcloud/CubeSandbox/stargazers\"></a>\n  <a href=\"https://github.com/tencentcloud/CubeSandbox/issues\"></a>\n  <a href=\"./LICENSE\"></a>\n  <a href=\"./CONTRIBUTING.md\"></a>\n  <a href=\"https://pypi.org/project/cubesandbox/\"></a>\n  <a href=\"https://landscape.cncf.io/?landscape=observability-and-analysis&group=ai-native&item=ai-native-infra--workload-runtime--cubesandbox\"></a>\n\n  \n  \n  \n  \n\n  <a href=\"./README_zh.md\"><strong>中文文档</strong></a> ·\n  <a href=\"./docs/guide/quickstart.md\"><strong>Quick Start</strong></a> ·\n  <a href=\"./docs/index.md\"><strong>Documentation</strong></a> ·\n  <a href=\"./docs/changelog/index.md\"><strong>Changelog</strong></a> ·\n  <a href=\"https://x.com/CubeSandbox_AI\"><strong>X(Twitter)</strong></a> ·\n  <a href=\"https://github.com/TencentCloud/CubeSandbox/issues/1040\"><strong>Top Contributor Program</strong></a> ·\n  <a href=\"https://forms.gle/Wjy53fksUoc3y4388\"><strong>Submit Use Case</strong></a>\n\n---\n\nCube Sandbox is a high-performance, out-of-the-box secure sandbox service built on RustVMM and KVM. It supports both single-node deployment and easy scaling to multi-node clusters. It is compatible with the E2B SDK ",
+      "readme_chars": 21895,
+      "promo_markers": [
+        "discord-funnel",
+        "trendshift"
+      ],
+      "release_count": 39,
+      "stars_per_contributor": 154
+    },
+    {
+      "full_name": "withastro/flue",
+      "owner": "withastro",
+      "url": "https://github.com/withastro/flue",
+      "homepage": "https://www.flueframework.com",
+      "description": "The sandbox agent framework.",
+      "language": "TypeScript",
+      "topics": [],
+      "stars": 7847,
+      "forks": 458,
+      "open_issues": 25,
+      "license": "Apache-2.0",
+      "owner_type": "Organization",
+      "created_at": "2026-02-07T22:27:04Z",
+      "pushed_at": "2026-08-08T10:07:09Z",
+      "days_since_push": 4,
+      "age_days": 185,
+      "found_by": [
+        "best-match",
+        "stars"
+      ],
+      "search_rank": {
+        "best-match": 0.04,
+        "stars": 0.2
+      },
+      "score": 89.7,
+      "score_breakdown": {
+        "relevance": 30.0,
+        "maintenance": 25.0,
+        "popularity": 13.0,
+        "hygiene": 10.5,
+        "team": 11.2
+      },
+      "contributors_count": 19,
+      "commits_last_90d": 791,
+      "readme_excerpt": "# Flue — The Agent Harness Framework\n\nNot another SDK. Build autonomous agents with Flue's programmable TypeScript harness.\n\n```ts\n// agents/triage.ts\n'use agent';\nimport { useModel, useSandbox, useSkill, useTool } from '@flue/runtime';\nimport { local } from '@flue/runtime/node';\nimport triage from '../skills/triage/SKILL.md';\nimport verify from '../skills/verify/SKILL.md';\nimport { openIssue, searchCode } from '../tools/github.ts';\n\n// The agent IS the function. Compose the complete harness it needs to do\n// real work, complete with virtual, local, or remote container sandbox.\nexport function Triage() {\n  useModel('anthropic/claude-sonnet-4-6');\n  useSandbox(local());\n  useSkill(triage);\n  useSkill(verify);\n  useTool(openIssue);\n  useTool(searchCode);\n\n  // Give agents the context and autonomy to solve complex tasks:\n  return `\nTriage a bug report end-to-end: reproduce the bug,\ndiagnose the root cause, verify whether the behavior is\nintentional, and attempt a fix.\n\n...`;\n}\n```\n\n## The framework for building the next generation of agents.\n\nThe first agents were built with raw LLM API calls. This worked for simple chatbots and scripted tasks, but not much else.\n\nAgents like Claude Code and Codex broke the mold. These were _real agents._ Autonomous. You give them a task — not a pre-defined series of steps — and trust them to complete it using the context and tools that you provide.\n\n**Flue unlocks this new architecture for agents.** Its built-in TypeScript harness gives any mod",
+      "readme_chars": 5065,
+      "promo_markers": [],
+      "release_count": 0,
+      "stars_per_contributor": 413
+    },
+    {
+      "full_name": "ComposioHQ/composio",
+      "owner": "ComposioHQ",
+      "url": "https://github.com/ComposioHQ/composio",
+      "homepage": "https://docs.composio.dev",
+      "description": "Composio powers 1000+ toolkits, tool search, context management, authentication, and a sandboxed workbench to help you build AI agents that turn intent into action.",
+      "language": "TypeScript",
+      "topics": [
+        "agentic-ai",
+        "agents",
+        "ai",
+        "ai-agents",
+        "aiagents",
+        "developer-tools",
+        "function-calling",
+        "gpt-4",
+        "javascript",
+        "js",
+        "llm",
+        "llmops",
+        "mcp",
+        "python",
+        "remote-mcp-server",
+        "sse",
+        "typescript"
+      ],
+      "stars": 29648,
+      "forks": 4696,
+      "open_issues": 57,
+      "license": "MIT",
+      "owner_type": "Organization",
+      "created_at": "2024-02-23T13:58:27Z",
+      "pushed_at": "2026-08-12T15:21:18Z",
+      "days_since_push": 0,
+      "age_days": 901,
+      "found_by": [
+        "best-match",
+        "stars"
+      ],
+      "search_rank": {
+        "best-match": 0.46,
+        "stars": 0.02
+      },
+      "score": 89.7,
+      "score_breakdown": {
+        "relevance": 19.8,
+        "maintenance": 25.0,
+        "popularity": 14.9,
+        "hygiene": 15.0,
+        "team": 15.0
+      },
+      "contributors_count": 84,
+      "commits_last_90d": 666,
+      "readme_excerpt": "<a href=\"https://composio.dev\">\n    \n      <source media=\"(prefers-color-scheme: dark)\" srcset=\"https://brand.composio.dev/logos/Logomark-White.svg\">\n      \n    </picture>\n  </a>\n\n  <a href=\"https://composio.dev\"><b>composio.dev</b></a> •\n  <a href=\"https://docs.composio.dev\">Documentation</a> •\n  <a href=\"https://docs.composio.dev/docs/quickstart\">Quickstart</a> •\n  <a href=\"https://docs.composio.dev/reference/changelog\">Changelog</a>\n\n  <a href=\"https://github.com/ComposioHQ/composio/stargazers\"></a>\n  <a href=\"https://www.npmjs.com/package/@composio/core\"></a>\n  <a href=\"https://pypi.org/project/composio/\"></a>\n  <a href=\"https://discord.gg/composio\"></a>\n  <a href=\"https://hvtracker.net/agents/composio/\"></a>\n\n# Composio\n\nComposio gives your AI agents 1000+ pre-authenticated toolkits, per-user sessions, authentication, triggers, and a sandbox, so you can ship agents that turn intent into action.\n\nThis is the Composio SDK monorepo. It contains:\n\n- **[`@composio/core`](ts/packages/core)**: TypeScript SDK\n- **[`composio`](python)**: Python SDK\n- **[`composio` CLI](ts/packages/cli)**: search, execute, and script tools from your shell\n- **Provider adapters** for OpenAI Agents, Claude Agent SDK, Vercel AI SDK, LangChain, and [more](#providers)\n\n## Quickstart\n\nCreate a session for a user, hand its tools to your agent, and let the agent take action across 1000+ apps. Grab a `COMPOSIO_API_KEY` from the [dashboard](https://dashboard.composio.dev/settings) first.\n\n### TypeScript\n\n``",
+      "readme_chars": 9090,
+      "promo_markers": [
+        "discord-funnel"
+      ],
+      "release_count": 935,
+      "stars_per_contributor": 353
+    },
+    {
+      "full_name": "bytedance/deer-flow",
+      "owner": "bytedance",
+      "url": "https://github.com/bytedance/deer-flow",
+      "homepage": "https://deerflow.tech",
+      "description": "An open-source long-horizon SuperAgent harness that researches, codes, and creates. With the help of sandboxes, memories, tools, skill, subagents and message gateway, it handles different levels of tasks that could take minutes to hours.",
+      "language": "Python",
+      "topics": [
+        "agent",
+        "agentic",
+        "agentic-framework",
+        "agentic-workflow",
+        "ai",
+        "ai-agents",
+        "deep-research",
+        "harness",
+        "langchain",
+        "langgraph",
+        "langmanus",
+        "llm",
+        "multi-agent",
+        "nodejs",
+        "podcast",
+        "python",
+        "superagent",
+        "typescript"
+      ],
+      "stars": 79843,
+      "forks": 10923,
+      "open_issues": 943,
+      "license": "MIT",
+      "owner_type": "Organization",
+      "created_at": "2025-05-07T02:50:19Z",
+      "pushed_at": "2026-08-12T03:47:25Z",
+      "days_since_push": 0,
+      "age_days": 462,
+      "found_by": [
+        "best-match",
+        "stars"
+      ],
+      "search_rank": {
+        "best-match": 0.9,
+        "stars": 0.0
+      },
+      "score": 88.6,
+      "score_breakdown": {
+        "relevance": 18.6,
+        "maintenance": 25.0,
+        "popularity": 15.0,
+        "hygiene": 15.0,
+        "team": 15.0
+      },
+      "contributors_count": 346,
+      "commits_last_90d": 851,
+      "readme_excerpt": "# 🦌 DeerFlow - 2.0\n\nEnglish | [中文](./README_zh.md) | [日本語](./README_ja.md) | [Français](./README_fr.md) | [Русский](./README_ru.md)\n\n[![Python](https://img.shields.io/badge/Python-3.12%2B-3776AB?logo=python&logoColor=white)](./backend/pyproject.toml)\n[![Node.js](https://img.shields.io/badge/Node.js-22%2B-339933?logo=node.js&logoColor=white)](./Makefile)\n[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)\n\n<a href=\"https://trendshift.io/repositories/14699\" target=\"_blank\"></a>\n> On February 28th, 2026, DeerFlow claimed the 🏆 #1 spot on GitHub Trending following the launch of version 2. Thanks a million to our incredible community — you made this happen! 💪🔥\n\nDeerFlow (**D**eep **E**xploration and **E**fficient **R**esearch **Flow**) is an open-source **super agent harness** that orchestrates **sub-agents**, **memory**, and **sandboxes** to do almost anything — powered by **extensible skills**.\n\nhttps://github.com/user-attachments/assets/a8bcadc4-e040-4cf2-8fda-dd768b999c18\n\n> [!NOTE]\n> **DeerFlow 2.0 is a ground-up rewrite.** It shares no code with v1. If you're looking for the original Deep Research framework, it's maintained on the [`1.x` branch](https://github.com/bytedance/deer-flow/tree/main-1.x) — contributions there are still welcome. Active development has moved to 2.0.\n\n## Official Website\n\nLearn more and see **real demos** on our [**official website**](https://deerflow.tech).\nThe landing-page case studies open as allowlisted, read-only sh",
+      "readme_chars": 101850,
+      "promo_markers": [
+        "star-history",
+        "trendshift"
+      ],
+      "release_count": 1,
+      "stars_per_contributor": 231
+    },
+    {
+      "full_name": "agent-infra/sandbox",
+      "owner": "agent-infra",
+      "url": "https://github.com/agent-infra/sandbox",
+      "homepage": "https://sandbox.agent-infra.com",
+      "description": "All-in-One Sandbox for AI Agents that combines Browser, Shell, File, MCP and VSCode Server in a single Docker container.",
+      "language": "Python",
+      "topics": [
+        "agent",
+        "all-in-one",
+        "browser",
+        "filesystem",
+        "mcp",
+        "sandbox",
+        "shell"
+      ],
+      "stars": 5679,
+      "forks": 509,
+      "open_issues": 71,
+      "license": "Apache-2.0",
+      "owner_type": "Organization",
+      "created_at": "2025-08-06T14:51:05Z",
+      "pushed_at": "2026-07-02T16:05:37Z",
+      "days_since_push": 41,
+      "age_days": 371,
+      "found_by": [
+        "best-match",
+        "stars"
+      ],
+      "search_rank": {
+        "best-match": 0.0,
+        "stars": 0.28
+      },
+      "score": 86.2,
+      "score_breakdown": {
+        "relevance": 30.0,
+        "maintenance": 17.5,
+        "popularity": 12.5,
+        "hygiene": 15.0,
+        "team": 11.2
+      },
+      "contributors_count": 16,
+      "commits_last_90d": 8,
+      "readme_excerpt": "# AIO Sandbox - All-in-One Agent Sandbox Environment\n\n  \n\n  <strong>🌐 Browser | 💻 Terminal | 📁 File | 🔧 VSCode | 📊 Jupyter | 🤖 MCP</strong>\n\n        🌐 <a href=\"https://sandbox.agent-infra.com/\">Website</a>&nbsp&nbsp\n        | &nbsp&nbsp🔌 <a href=\"https://sandbox.agent-infra.com/api\">API</a>&nbsp&nbsp\n        | &nbsp&nbsp📑 <a href=\"https://arxiv.org/pdf/2509.02544#S2.SS2\">Paper</a>&nbsp&nbsp\n        | &nbsp&nbsp🌟 <a href=\"https://github.com/agent-infra/sandbox/tree/main/examples\">Examples</a>&nbsp&nbsp\n        | &nbsp&nbsp📊 <a href=\"https://github.com/agent-infra/sandbox/tree/main/evaluation\">Evaluation</a> &nbsp&nbsp\n\n  <a href=\"https://github.com/agent-infra/sandbox/releases\"></a>\n  <a href=\"https://github.com/agent-infra/sandbox/blob/main/LICENSE\"></a>\n  <a href=\"https://pypi.org/project/agent-sandbox/\"></a>\n  <a href=\"https://www.npmjs.com/package/@agent-infra/sandbox\"></a>\n\n![](./website/docs/public/images/aio-index.png)\n\n## 🚀 Quick Start\n\nGet up and running in 30 seconds:\n\n```bash\n# Recommended: Enable API Key authentication (protects all services: API, JupyterLab, VNC)\n# - Supports three methods: X-AIO-API-Key header, Authorization: Bearer header, ?api_key= query parameter\n# - Without SANDBOX_API_KEY, services remain open (backward compatible)\ndocker run --security-opt seccomp=unconfined --rm -it \\\n  -e SANDBOX_API_KEY=your-secret-key \\\n  -p 127.0.0.1:8080:8080 ghcr.io/agent-infra/sandbox:latest\n```\n\nFor users in mainland China:\n\n```bash\ndocker run --security-opt seccom",
+      "readme_chars": 15800,
+      "promo_markers": [
+        "beg-for-star"
+      ],
+      "release_count": 20,
+      "stars_per_contributor": 355
+    },
+    {
+      "full_name": "rivet-dev/agentos",
+      "owner": "rivet-dev",
+      "url": "https://github.com/rivet-dev/agentos",
+      "homepage": "https://agentos-sdk.dev",
+      "description": "Give agents an operating system as a library. Runs in your existing backend – no sandboxes, VMs, or SaaS. Powered by WebAssembly & V8 isolates.",
+      "language": "Rust",
+      "topics": [
+        "agent",
+        "ai",
+        "javascript",
+        "llm",
+        "sandbox",
+        "v8",
+        "wasm",
+        "webassembly"
+      ],
+      "stars": 4368,
+      "forks": 221,
+      "open_issues": 110,
+      "license": "Apache-2.0",
+      "owner_type": "Organization",
+      "created_at": "2024-02-07T01:06:25Z",
+      "pushed_at": "2026-08-11T11:18:09Z",
+      "days_since_push": 1,
+      "age_days": 917,
+      "found_by": [
+        "best-match",
+        "stars"
+      ],
+      "search_rank": {
+        "best-match": 0.28,
+        "stars": 0.34
+      },
+      "score": 84.8,
+      "score_breakdown": {
+        "relevance": 25.2,
+        "maintenance": 25.0,
+        "popularity": 12.1,
+        "hygiene": 15.0,
+        "team": 7.5
+      },
+      "contributors_count": 7,
+      "commits_last_90d": 305,
+      "readme_excerpt": "Give agents an operating system as a library.<br/>92x faster cold starts, 47x less memory, 254x cheaper than sandboxes.<br/>Built-in ACP agents: Pi, Claude Code, Codex, and OpenCode\n\n  <a href=\"https://agentos-sdk.dev/docs\">Documentation</a> | <a href=\"https://agentos-sdk.dev/docs/quickstart\">Quickstart</a> | <a href=\"https://agentos-sdk.dev/registry\">Registry</a> | <a href=\"https://rivet.dev/discord\">Discord</a>\n\n## Why agentOS\n\n- **Runs inside your process**: No microVMs to boot, no containers to pull, no nested virtualization. Warm VM creation takes single-digit milliseconds and each VM costs tens of megabytes.\n- **Embeds in your backend**: Agents call your functions directly via [bindings](https://agentos-sdk.dev/docs/bindings) — ordinary JavaScript calls, not another network service. Credentials stay on the host; agents see only inputs and outputs.\n- **Granular security**: [Permissions](https://agentos-sdk.dev/docs/permissions) gate filesystem, network, process, and environment access, with outward-facing capabilities like network egress denied by default. Guest JavaScript runs in V8 isolates and compiled tools run as WebAssembly, all inside one compact runtime.\n- **Deploy anywhere**: Just an npm package. Run locally with `npx rivetkit dev`, then deploy to [Rivet Cloud](https://agentos-sdk.dev/docs/deployment) for managed infrastructure or self-host on your own.\n- **Open source**: Apache 2.0 licensed.\n\n### agentOS vs Sandbox\n\nagentOS is a lightweight VM that runs inside ",
+      "readme_chars": 11333,
+      "promo_markers": [],
+      "release_count": 34,
+      "stars_per_contributor": 624
+    },
+    {
+      "full_name": "eugene1g/agent-safehouse",
+      "owner": "eugene1g",
+      "url": "https://github.com/eugene1g/agent-safehouse",
+      "homepage": "https://agent-safehouse.dev",
+      "description": "Sandbox your local AI agents so they can read/write only what they need",
+      "language": "Shell",
+      "topics": [
+        "ai-agents",
+        "claude-code",
+        "llm",
+        "macos",
+        "sandbox",
+        "security"
+      ],
+      "stars": 1978,
+      "forks": 82,
+      "open_issues": 25,
+      "license": "Apache-2.0",
+      "owner_type": "User",
+      "created_at": "2026-02-09T17:33:52Z",
+      "pushed_at": "2026-07-29T13:08:36Z",
+      "days_since_push": 14,
+      "age_days": 183,
+      "found_by": [
+        "best-match",
+        "stars"
+      ],
+      "search_rank": {
+        "best-match": 0.38,
+        "stars": 0.6
+      },
+      "score": 84.4,
+      "score_breakdown": {
+        "relevance": 22.2,
+        "maintenance": 25.0,
+        "popularity": 11.0,
+        "hygiene": 15.0,
+        "team": 11.2
+      },
+      "contributors_count": 17,
+      "commits_last_90d": 39,
+      "readme_excerpt": "# Agent Safehouse\n\n[![Tests (macOS)](https://github.com/eugene1g/agent-safehouse/actions/workflows/tests-macos.yml/badge.svg)](https://github.com/eugene1g/agent-safehouse/actions/workflows/tests-macos.yml)\n[![E2E TUI Tests (macOS)](https://github.com/eugene1g/agent-safehouse/actions/workflows/e2e-agent-tui-macos.yml/badge.svg)](https://github.com/eugene1g/agent-safehouse/actions/workflows/e2e-agent-tui-macos.yml)\n[![License: Apache 2.0](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)\n\nSandbox your LLM coding agents on macOS so they can only access the files and integrations they actually need.\n\nAgent Safehouse uses `sandbox-exec` with composable policy profiles and a deny-first model. It includes profiles for major coding agents and app-hosted agent workflows while keeping normal development usage practical.\n\n## Install\n\nHomebrew:\n\n```bash\nbrew install eugene1g/safehouse/agent-safehouse\n```\n\nStandalone script:\n\n```bash\nmkdir -p ~/.local/bin\ncurl -fsSL https://github.com/eugene1g/agent-safehouse/releases/latest/download/safehouse.sh \\\n  -o ~/.local/bin/safehouse\nchmod +x ~/.local/bin/safehouse\n```\n\n## Philosophy\n\nAgent Safehouse is designed around practical least privilege:\n\n- Start from deny-all.\n- Allow only what the agent needs to do useful work.\n- Keep developer workflows productive.\n- Make risk reduction easy by default.\n\nIt is a hardening layer, not a perfect security boundary against a determined attacker.\n\n## HOME access by default\n\n`HOME_DIR` is us",
+      "readme_chars": 5612,
+      "promo_markers": [],
+      "release_count": 16,
+      "stars_per_contributor": 116
+    }
+  ],
+  "runner_ups": [
+    {
+      "full_name": "NevaMind-AI/memU",
+      "url": "https://github.com/NevaMind-AI/memU",
+      "stars": 14292,
+      "score": 72.8,
+      "days_since_push": 0,
+      "skipped_reason": "",
+      "description": "Personal memory across agents"
+    },
+    {
+      "full_name": "vercel/eve",
+      "url": "https://github.com/vercel/eve",
+      "stars": 4571,
+      "score": 72.6,
+      "days_since_push": 0,
+      "skipped_reason": "",
+      "description": "The Open Framework for Building Agents"
+    },
+    {
+      "full_name": "rivet-dev/sandbox-agent",
+      "url": "https://github.com/rivet-dev/sandbox-agent",
+      "stars": 1533,
+      "score": 72.5,
+      "days_since_push": 54,
+      "skipped_reason": "",
+      "description": "Run Coding Agents in Sandboxes. Control Them Over HTTP. Supports Claude Code, Codex, OpenCode, and Amp."
+    },
+    {
+      "full_name": "strukto-ai/mirage",
+      "url": "https://github.com/strukto-ai/mirage",
+      "stars": 3402,
+      "score": 71.3,
+      "days_since_push": 0,
+      "skipped_reason": "",
+      "description": "The World's First Unified Virtual Filesystem For AI Agents"
+    },
+    {
+      "full_name": "mattpocock/sandcastle",
+      "url": "https://github.com/mattpocock/sandcastle",
+      "stars": 7346,
+      "score": 69.7,
+      "days_since_push": 43,
+      "skipped_reason": "",
+      "description": "Orchestrate sandboxed coding agents in TypeScript with sandcastle.run()"
+    },
+    {
+      "full_name": "clawkwork/clawk",
+      "url": "https://github.com/clawkwork/clawk",
+      "stars": 967,
+      "score": 68.0,
+      "days_since_push": 7,
+      "skipped_reason": "",
+      "description": "Give coding agents a disposable Linux VM, not your laptop"
+    },
+    {
+      "full_name": "livekit-examples/agent-starter-react",
+      "url": "https://github.com/livekit-examples/agent-starter-react",
+      "stars": 916,
+      "score": 67.3,
+      "days_since_push": 0,
+      "skipped_reason": "",
+      "description": "A complete voice AI frontend app for LiveKit Agents with Next.js"
+    },
+    {
+      "full_name": "ntegrals/openbrowser",
+      "url": "https://github.com/ntegrals/openbrowser",
+      "stars": 9508,
+      "score": 66.5,
+      "days_since_push": 132,
+      "skipped_reason": "",
+      "description": "Let AI agents browse the web. An autonomous toolkit for browser-based AI agents."
+    }
+  ]
+}

@@ -52,3 +52,6 @@ categories:
       - name: github-weekly-hot
         path: skills/info/github-weekly-hot
         summary: GitHub Trending 周榜锐评（链接 + 介绍 + 数据支撑评价 → HTML）
+      - name: github-repo-recommend
+        path: skills/info/github-repo-recommend
+        summary: 按关键字找 GitHub 开源仓库做选型（三路检索 + 维护度排序 + 锐评 → HTML）
