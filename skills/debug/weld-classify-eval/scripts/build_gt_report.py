@@ -266,7 +266,11 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
         weight_name = str(clf.get("weight_name") or "") or Path(str(clf.get("weight") or "")).name
         if weight_name:
             weights.setdefault(weight_name, str(clf.get("weight_sha256") or ""))
-        legacy_total += int(clf.get("legacy_cached") or 0)
+        if str(clf.get("weight_sha256") or ""):
+            legacy_total += int(clf.get("legacy_cached") or 0)
+        else:
+            # 整份产物早于 weight_sha256 字段：这一案的每一条都无从判断是哪个权重跑的
+            legacy_total += len(rows)
         other_weight_total += int(clf.get("other_weight_rows") or 0)
         case_img = img_root / f"case{i:02d}"
         case_img.mkdir(exist_ok=True)
