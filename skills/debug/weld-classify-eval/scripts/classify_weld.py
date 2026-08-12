@@ -266,6 +266,20 @@ def run_case(clf: WeldClassifier, case_dir: Path, tracks: tuple[str, ...], winfo
     return summary
 
 
+def welded_model_name(ai_sim: Path) -> str:
+    """dopartsim 规定的焊接权重文件名（PartCls 按文件名全等匹配）。
+
+    读不到就返回空串，由 resolve_weight 退化成"取最新"并给出提示。
+    """
+    sys.path.insert(0, str(ai_sim))
+    try:
+        from dopartsim.util.part_type_config import ModelName
+    except Exception as exc:
+        log(f"NOTE 读不到 ModelName（{type(exc).__name__}: {exc}）")
+        return ""
+    return str(ModelName.WELDED_PART.value)
+
+
 def warn_weight_change(root: Path, winfo: dict) -> None:
     """本次权重与该 ROOT 上次跑的不一致时，开跑前就说清楚，别等报告出来才发现。"""
     path = root / "classify_overview.json"
@@ -306,9 +320,15 @@ def main() -> None:
     root = Path(args.root)
     tracks = TRACKS if args.track == "both" else (args.track,)
     ai_sim = resolve_ai_sim(args.ai_sim)
-    weight = resolve_weight(ai_sim, args.weight)
+    expected_name = welded_model_name(ai_sim)
+    weight = resolve_weight(ai_sim, args.weight, expected_name)
     winfo = weight_info(weight)
-    picked = "显式指定" if args.weight else "自动取最新"
+    if args.weight:
+        picked = "显式指定"
+    elif expected_name:
+        picked = "dopartsim ModelName.WELDED_PART"
+    else:
+        picked = "取最新（枚举读取失败）"
     log(f"weight [{picked}] {winfo['weight_name']} sha={winfo['weight_sha256'][:12]}")
     warn_weight_change(root, winfo)
 

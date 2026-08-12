@@ -32,6 +32,7 @@ description: >-
 conda activate py12     # 需要 pythonocc-core 7.9.x + torch + dal SDK
 export SKILL_DIR=<本 SKILL.md 所在目录>
 export DO_DAL_API_BASE_URL=https://dal.designorder.cn        # 拉数据才需要
+                                                             # 也认 DAL_API_BACKGROUND_URL / DAL_BACKGROUND_URL
 export AI_PART_SIMILARITY_DIR=<...>/ai_part_similarity-dev   # 模型与权重所在 checkout
 ```
 
@@ -54,9 +55,22 @@ export AI_PART_SIMILARITY_DIR=<...>/ai_part_similarity-dev   # 模型与权重�
 | 大小 | 6,478,069 B |
 | sha256 | `24ad9d4b7cfc835108e547057e72522fe9359dda6c45117b198d90bce80a8a06` |
 
-`resolve_weight` 默认按文件名排序取**最新**的 `pointNet_weldedPart_*.pth`：仓库里一旦出现更新的
-权重，同样的命令会跑出不同结果。要和历史基准对比就显式 `--weight` 指到上面这个文件
-（或设 `WELD_WEIGHT_PATH`）。
+**能用哪个权重不是你说了算，是 `dopartsim` 说了算。** `PartCls.__init__` 拿权重的
+**文件名全等**匹配 `ModelName` 枚举来决定模型类型和类别表，名字不在枚举里就直接
+`raise Exception('model name error!')`：
+
+```python
+# dopartsim/util/part_type_config.py
+class ModelName(Enum):
+    # WELDED_PART = "pointNet2_weldedPart_sorted.pth"   # 换权重靠改这一行
+    # WELDED_PART = "pointNet_weldedPart.pth"
+    WELDED_PART = "pointNet_weldedPart_260211.pth"
+```
+
+所以 `resolve_weight` 的默认行为是**读 `ModelName.WELDED_PART` 取那个确切文件名**，
+不是"挑目录里最新的"——往 `weights/` 里放个新权重不会改变本次评测用的权重，
+换权重必须同时改 dopartsim 这一行。优先级：`--weight` > `WELD_WEIGHT_PATH` > 枚举值。
+显式指定的文件名与枚举不符时会先告警再让 `PartCls` 报错，不会静默跑错模型。
 
 分类产物（`classify_results.json` / `classify_overview.json`）和 HTML 报告都会记
 `weight_name` / `weight_size` / `weight_sha256`，事后能核对某份报告到底是哪个权重跑的。

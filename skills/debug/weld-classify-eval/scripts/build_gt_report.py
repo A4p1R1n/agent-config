@@ -173,13 +173,17 @@ def apply_labels(case_dir: Path, allow_partial: bool) -> list[dict]:
     return kept
 
 
-def weight_label(weights: dict, legacy: int, other: int) -> str:
-    """标明这些准确率是哪个权重跑出来的；混了多个权重或有来源不明的缓存，必须看得见。"""
+def weight_label(weights: set, legacy: int, other: int) -> str:
+    """标明这些准确率是哪个权重跑出来的；混了多个权重或有来源不明的缓存，必须看得见。
+
+    按 (文件名, sha) 收集而不是按文件名：PartCls 要求权重文件名等于 ModelName 枚举值，
+    所以"同名不同内容"是可能出现的，按名字去重会把两份权重合并成一条、只显示其中一个 sha。
+    """
     if not weights:
         base = "未记录（分类产物早于 weight_sha256 字段）"
     else:
         bits = []
-        for name, sha in weights.items():
+        for name, sha in sorted(weights):
             bits.append(f"{name} · {sha[:12]}" if sha else f"{name} · sha 未记录")
         base = " ｜ ".join(bits)
     notes = []
@@ -252,7 +256,7 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
     img_root.mkdir(exist_ok=True)
 
     cases = []
-    weights: dict[str, str] = {}
+    weights: set[tuple[str, str]] = set()
     legacy_total = 0
     other_weight_total = 0
     for i, case_dir in enumerate(iter_cases(root), 1):
@@ -264,9 +268,15 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
         clf = read_json(case_dir / "classify_results.json")
         engineering_id = str(clf.get("engineering_id") or "")
         weight_name = str(clf.get("weight_name") or "") or Path(str(clf.get("weight") or "")).name
+        case_sha = str(clf.get("weight_sha256") or "")
         if weight_name:
-            weights.setdefault(weight_name, str(clf.get("weight_sha256") or ""))
-        if str(clf.get("weight_sha256") or ""):
+            weights.add((weight_name, case_sha))
+        # keep 下来的行可能来自上一次运行的其他权重，case 级字段只记本次运行的权重，
+        # 不把这些 sha 也列出来，报告就会漏掉真正参与统计的那一份
+        for row_sha in {str(r.get("weight_sha256") or "") for r in clf.get("results") or []}:
+            if row_sha and row_sha != case_sha:
+                weights.add(("（沿用上次运行）", row_sha))
+        if case_sha:
             legacy_total += int(clf.get("legacy_cached") or 0)
         else:
             # 整份产物早于 weight_sha256 字段：这一案的每一条都无从判断是哪个权重跑的
@@ -431,7 +441,9 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
     summary = {
         "created_at": datetime.now().isoformat(timespec="seconds"),
         "title": title,
-        "weights": weights,
+        "weights": [
+            {"weight_name": name, "weight_sha256": sha} for name, sha in sorted(weights)
+        ],
         "legacy_cached": legacy_total,
         "other_weight_rows": other_weight_total,
         "total": total_n,

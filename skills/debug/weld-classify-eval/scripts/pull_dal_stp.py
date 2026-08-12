@@ -172,12 +172,24 @@ def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--list", required=True, help="JSON list of {name, engineering_id}")
     parser.add_argument("--out", required=True, help="output root for case_* dirs")
-    parser.add_argument("--dal-url", default=os.environ.get("DO_DAL_API_BASE_URL", ""))
+    parser.add_argument(
+        "--dal-url",
+        # 也认被测仓库已有的变量名，省得同一个地址再配一遍
+        default=(
+            os.environ.get("DO_DAL_API_BASE_URL")
+            or os.environ.get("DAL_API_BACKGROUND_URL")
+            or os.environ.get("DAL_BACKGROUND_URL")
+            or ""
+        ),
+    )
     parser.add_argument("--oss-base", default=os.environ.get("DO_OSS_BASE_URL", DEFAULT_OSS))
     args = parser.parse_args()
 
     if not args.dal_url:
-        raise SystemExit("missing DAL url: pass --dal-url or set DO_DAL_API_BASE_URL")
+        raise SystemExit(
+            "missing DAL url: pass --dal-url or set "
+            "DO_DAL_API_BASE_URL / DAL_API_BACKGROUND_URL / DAL_BACKGROUND_URL"
+        )
 
     from dal import DalClient  # imported late so --help works without the SDK
 
@@ -189,8 +201,11 @@ def main() -> None:
     client = DalClient(args.dal_url.strip())
     overview = {"cases": []}
     for i, item in enumerate(items, 1):
-        name = item["name"]
-        engineering_id = str(item["engineering_id"])
+        # 手写清单和接口原始返回都常见 camelCase，两种都收，别为这个抛 KeyError
+        engineering_id = str(item.get("engineering_id") or item.get("engineeringId") or "")
+        if not engineering_id:
+            raise SystemExit(f"清单第 {i} 项没有 engineering_id: {item}")
+        name = str(item.get("name") or engineering_id)
         case_dir = out_root / f"case_{engineering_id}_{safe_name(name, engineering_id)}"
         log(f"[{i}/{len(items)}] {name}")
         try:

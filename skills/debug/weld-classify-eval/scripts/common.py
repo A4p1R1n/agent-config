@@ -86,22 +86,38 @@ def resolve_ai_sim(explicit: str = "") -> Path:
     )
 
 
-def resolve_weight(ai_sim: Path, explicit: str = "") -> Path:
-    if explicit:
-        weight = Path(explicit)
+def resolve_weight(ai_sim: Path, explicit: str = "", expected_name: str = "") -> Path:
+    """定位焊接权重。
+
+    dopartsim 的 `PartCls` 按**文件名全等**匹配 `ModelName` 枚举来决定模型类型，
+    名字不在枚举里就直接 `raise Exception('model name error!')`。
+    所以默认不能"挑最新的"——必须用 `expected_name`（调用方从 `ModelName.WELDED_PART` 读）
+    去取那个确切的文件，否则往 weights/ 里放个新权重就会让整条流水线崩在模型加载处。
+    """
+    picked = explicit or os.environ.get("WELD_WEIGHT_PATH", "")
+    if picked:
+        weight = Path(picked)
         if not weight.is_file():
             raise SystemExit(f"weight not found: {weight}")
+        if expected_name and weight.name != expected_name:
+            log(
+                f"WARNING 权重文件名 {weight.name} != dopartsim 期望的 {expected_name}，"
+                "PartCls 会拒绝加载（model name error!）"
+            )
         return weight
-    env_weight = os.environ.get("WELD_WEIGHT_PATH", "")
-    if env_weight:
-        return Path(env_weight)
     weights_dir = ai_sim / "weights"
+    if expected_name:
+        weight = weights_dir / expected_name
+        if not weight.is_file():
+            raise SystemExit(
+                f"dopartsim 期望的权重 {expected_name} 不在 {weights_dir}，用 --weight 指定"
+            )
+        return weight
+    # 读不到枚举时的退路：按名字排序取最新，可能与 dopartsim 不匹配
     dated = sorted(weights_dir.glob("pointNet_weldedPart_*.pth"))
     if dated:
+        log(f"NOTE 未能读到 ModelName.WELDED_PART，退化为取最新：{dated[-1].name}")
         return dated[-1]
-    fallback = weights_dir / "pointNet_weldedPart.pth"
-    if fallback.is_file():
-        return fallback
     raise SystemExit(f"no welded weight found under {weights_dir}; pass --weight")
 
 
