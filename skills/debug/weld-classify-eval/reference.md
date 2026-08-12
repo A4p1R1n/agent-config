@@ -37,7 +37,12 @@ AES-128-ECB + PKCS7 加密，密钥硬编码在前端（`_11111000001111@`），
 - **CDP（默认）**：web-access proxy 开后台 tab → `/eval` 读 localStorage → 本地解密。
   跨 profile / 多浏览器都能用，且能确认页面确实登录着。
 - **离线兜底**：`read_local_token.py` 直接扫 Chrome 的 Local Storage leveldb，
-  不需要 proxy，但要猜 `--browser` / `--profile`。
+  不需要 proxy，但要猜 `--browser` / `--profile`（路径不常规用 `--user-data-dir`）。
+  三个平台的 profile 布局都不一样，已分别适配：macOS 在 `~/Library/Application Support/` 下
+  且没有 `User Data` 这一层，Windows 在 `%LOCALAPPDATA%` 下且厂商名多一级，
+  Linux 在 `~/.config` 下用小写短名。AES-128-ECB 解密优先 pycryptodome，
+  没装则走 `aes_ecb.py` 的纯标准库实现——Windows 上既没有 pycryptodome
+  也没有 `openssl` 命令是常态，不该为这一步再加安装前置。
 
 再兜底就是手工：`--token`（DevTools 复制 `X-Access-Token`）或
 `--from-response`（存一份 findByConditionPlus 响应）。token 有效期有限，过期重取。

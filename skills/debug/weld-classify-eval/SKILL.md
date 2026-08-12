@@ -41,6 +41,33 @@ export AI_PART_SIMILARITY_DIR=<...>/ai_part_similarity-dev   # 模型与权重�
 （在 `do_part_cla` 仓库里跑就能自动命中），找不到会报错要求显式给 `--ai-sim`。
 下面命令一律 `python "$SKILL_DIR/scripts/xxx.py"`，**工作目录放被测仓库根目录**。
 
+### 全新机器要装什么
+
+**装好 Cursor + 本 skill 是不够的**，还有四项前置，其中两项必须能连内网：
+
+| 前置 | 内网 | 说明 |
+|---|---|---|
+| Python 3.12 + `pythonocc-core` 7.9.3 + torch | 否 | 见 `deploy-do-env` skill；conda-forge 有 win-64 包 |
+| `do_part_cla` checkout | **是** | `dopartsim` 和权重都在里面，`weights/` 116 MB 随 git 一起 |
+| `dal` SDK | **是** | 内网 PyPI `hub.designorder.cn/repository/pypi-hosted`，第 2 步拉 STP 要它 |
+| 本 skill | 否 | Windows 上 `install.sh`（bash + 软链）不好使，直接把目录拷到 `%USERPROFILE%\.cursor\skills\` |
+
+装完之后**跑评测不需要内网**：DAL 数据面 `https://dal.designorder.cn` 走公网就能拉 STP。
+
+Windows 上第 1 步（从 URL 取清单）会退化：CDP proxy 来自 **web-access**，那是 Claude Code
+的 plugin，Cursor 不带。此时用 `--token` 手动给凭据，其余步骤与 macOS 完全一致：
+
+```bash
+python "$SKILL_DIR/scripts/fetch_project_parts.py" --url "<项目页 URL>" --token "<X-Access-Token>"
+```
+
+token 从浏览器 F12 → Network 里任一请求头的 `X-Access-Token` 复制。
+也可以试 `read_local_token.py`（已支持 Windows/Linux/macOS 的 profile 路径，
+AES 走纯标准库实现，不依赖 pycryptodome 或 `openssl`），但它要读浏览器的 leveldb，
+路径不标准时用 `--user-data-dir` 指。
+
+注意"浏览器里已登录"本身不够——脚本要的是那个 token，只能由 CDP 去读或你手动贴。
+
 ### 权重从哪来
 
 `dopartsim` 和权重都在 **do_part_cla** 仓库里
@@ -107,8 +134,8 @@ proxy 只会关它自己建的 tab，不动用户已有 tab。
 `--exclude` 按名字包含匹配剔除不该进评测的件（总成 `Product1`、夹具 `*-JIG` 等），
 剔掉的名字会记在 `parts.json` 的 `exclude` 字段里。
 
-没有 CDP 时的兜底（`--token` / `--from-response`）和接口细节见
-[reference.md](reference.md) 第一节。
+没有 CDP 时（Windows，或没装 web-access）用 `--token` 手动给凭据，见上面"全新机器要装什么"；
+`--from-response` 兜底和接口细节见 [reference.md](reference.md) 第一节。
 
 用户已有本地 case 目录时，跳到第 3 步。
 
