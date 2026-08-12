@@ -6,7 +6,7 @@
 
 ```
 agent-config/
-├── catalog.yaml             # skills 分类目录（debug / deploy / info）
+├── catalog.yaml             # skills 分类目录（debug / deploy / common）
 ├── WORKFLOW.md              # Debug Case → 部署：每步用哪个 skill
 ├── CASE_WALKTHROUGH.md      # 具体 case 教程：提示词 × skill 说明
 ├── examples/                # 教程配套产物（如投影线 HTML）
@@ -24,7 +24,7 @@ agent-config/
 │   │   ├── algorithm-service-release/  # 算法服务 release/tag
 │   │   ├── jenkins-service-release/    # Jenkins K8s 部署
 │   │   └── hotfix-do-dimension/   # 火线修复
-│   └── info/                # 资讯与调研
+│   └── common/              # 通用（与具体项目无关）
 │       ├── github-weekly-hot/     # GitHub 周榜锐评 → HTML
 │       └── github-repo-recommend/ # 关键字找开源仓库选型 → HTML
 ├── rules/

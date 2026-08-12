@@ -1,0 +1,4 @@
+__pycache__/
+.DS_Store
+# reports/ 全是跑出来的产物（周报数据、锐评、HTML），只留在本地不入库
+reports/

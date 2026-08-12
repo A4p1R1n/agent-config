@@ -10,7 +10,7 @@ description: >-
 
 把 GitHub Trending 周榜变成一份**带判断**的周报：每个项目给出链接、介绍，以及一句挂着数字的锐评。
 
-技能根：`~/agent-config/skills/info/github-weekly-hot/`。锐评标准见 [review-rubric.md](review-rubric.md)。
+技能根：`~/agent-config/skills/common/github-weekly-hot/`。锐评标准见 [review-rubric.md](review-rubric.md)。
 
 ## 硬性约束
 
@@ -35,7 +35,7 @@ GitHub 周榜进度:
 ### 1. 抓数据
 
 ```bash
-cd ~/agent-config/skills/info/github-weekly-hot/scripts
+cd ~/agent-config/skills/common/github-weekly-hot/scripts
 python3 fetch_trending.py --since weekly --top 10 --deep --out /tmp/gh_weekly.json
 ```
 
@@ -147,4 +147,5 @@ python3 scripts/build_weekly_html.py \
 | `scripts/fetch_trending.py` | 抓 Trending + `gh api` 补元数据 + 推广痕迹检测，输出事实 JSON |
 | `scripts/build_weekly_html.py` | 事实 JSON + 锐评 JSON → 一页自包含 HTML |
 
-产物落在 `reports/<YYYY-MM-DD>.{review.json,html}`，两份都留着，历史周报可以直接对比。
+产物落在 `reports/<YYYY-MM-DD>.{review.json,html}`。**整个 `reports/` 不入库**（已在 `.gitignore` 里），
+只留在本地：历史周报堆在那儿，隔几周翻回去对比同一个项目还在不在榜、提交量掉了没有。

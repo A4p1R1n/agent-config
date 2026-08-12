@@ -8,7 +8,7 @@
 用法:
     python3 build_weekly_html.py --data /tmp/gh_weekly.json \
         --review /tmp/gh_weekly_review.json \
-        --out ~/agent-config/skills/info/github-weekly-hot/reports/2026-08-12.html --open
+        --out ~/agent-config/skills/common/github-weekly-hot/reports/2026-08-12.html --open
 """
 
 import argparse

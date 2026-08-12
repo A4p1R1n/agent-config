@@ -1,3 +1,0 @@
-__pycache__/
-# HTML 是生成物，有 data.json + review.json 就能一条命令重新出，不入库
-reports/*.html

@@ -11,7 +11,7 @@ description: >-
 用户给关键字，你给一份**能直接拿来做技术选型**的报告：每个仓库有链接、一句人话介绍、一句挂着数字的锐评，
 外加「什么场景该用 / 别用在哪」。
 
-技能根：`~/agent-config/skills/info/github-repo-recommend/`。锐评标准见 [review-rubric.md](review-rubric.md)。
+技能根：`~/agent-config/skills/common/github-repo-recommend/`。锐评标准见 [review-rubric.md](review-rubric.md)。
 
 和 `github-weekly-hot` 的区别：那个看**这周什么在火**，这个回答**我要做 X，该用谁**。判断口径完全不同——
 热度在这里是次要指标，能不能长期依赖才是主线。
@@ -53,7 +53,7 @@ GitHub 选型进度:
 ### 2. 搜
 
 ```bash
-cd ~/agent-config/skills/info/github-repo-recommend/scripts
+cd ~/agent-config/skills/common/github-repo-recommend/scripts
 python3 search_repos.py --keywords "vector database" --top 8 --out /tmp/repos.json
 ```
 
@@ -190,25 +190,18 @@ emoji 也会在渲染时被剥掉（仓库描述里常带，规范不允许）�
 | `scripts/search_repos.py` | 三路检索合并 + 打分排序 + 深挖 shortlist，输出事实 JSON |
 | `scripts/build_recommend_html.py` | 事实 JSON + 锐评 JSON → 一页自包含 HTML |
 
-产物落在 `reports/<YYYY-MM-DD>-<关键字>.{data.json,review.json,html}`。前两份进 git，
-**HTML 不入库**（生成物，已在 `.gitignore` 里）——需要时用这两份 JSON 一条命令重新出。
-同一关键字隔几个月再跑一次，对比 data.json 就能看出谁在长、谁停更了。
+产物落在 `reports/<YYYY-MM-DD>-<关键字>.{data.json,review.json,html}`。**整个 `reports/` 不入库**
+（已在 `.gitignore` 里），只留在本地：同一关键字隔几个月再跑一次，对比两份 data.json 就能看出
+谁在长、谁停更了。
 
-两份完整示例，写报告前先看它们的 `review.json` 是什么成色：
+### 两个实跑案例（结论已沉淀进 rubric，产物不在仓库里）
 
-| 示例 | 演示什么 |
-|------|----------|
-| `reports/2026-08-12-vector-database.review.json` | 品类混淆：RAG 框架给自己贴 `vector-database` 标签，混进 shortlist |
-| `reports/2026-08-12-agent-sandbox.review.json` | 词义歧义：`HolmesGPT` 描述里的「CNCF Sandbox Project」指的是 CNCF 项目成熟度等级，不是代码沙箱 |
+| 关键字 | 踩到什么 |
+|--------|----------|
+| `vector database` | 品类混淆：RAG 框架（llama_index、anything-llm、PageIndex）给自己贴了 `vector-database` 标签，靠 topic 一路混进 shortlist |
+| `agent sandbox` | 词义歧义：`HolmesGPT` 描述里的「CNCF Sandbox Project」指的是 CNCF 项目成熟度等级，不是代码沙箱，脚本却给了它第 2 名 |
 
-想看渲染效果就本地生成一份：
-
-```bash
-cd ~/agent-config/skills/info/github-repo-recommend
-python3 scripts/build_recommend_html.py \
-  --data reports/2026-08-12-agent-sandbox.data.json \
-  --review reports/2026-08-12-agent-sandbox.review.json \
-  --out reports/2026-08-12-agent-sandbox.html --open
-```
+两个案例说明同一件事：**shortlist 里一定有需要人工剔掉的东西**。搜完先逐条问
+「这真的是用户要的那类工具吗」，再动笔写锐评。完整的正反例见 [review-rubric.md](review-rubric.md)。
 
 两个案例都说明同一件事：**shortlist 里一定有需要人工剔掉的东西**。搜完先逐条问「这真的是用户要的那类工具吗」。
