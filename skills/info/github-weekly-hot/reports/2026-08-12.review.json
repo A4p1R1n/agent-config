@@ -1,0 +1,85 @@
+{
+  "title": "GitHub 周榜锐评 · 2026-08-12",
+  "captured_at": "2026-08-12 15:02 UTC",
+  "source_url": "https://github.com/trending?since=weekly",
+  "stats": [
+    { "value": "38,807", "label": "本周新增 star（Top 10 合计）" },
+    { "value": "8 / 10", "label": "直接服务 AI agent" },
+    { "value": "6 / 10", "label": "README 挂 trendshift 导流徽章", "tone": "warn" },
+    { "value": "2 / 10", "label": "90 天提交少于 50 次", "tone": "bad" }
+  ],
+  "repos": [
+    {
+      "name": "cloudflare/computer",
+      "tone": "success",
+      "facts": ["90 天 726 次提交", "10 位贡献者", "README 零导流徽章", "建仓 68 天", "MIT"],
+      "intro": "把一整套虚拟文件系统塞进 Durable Object：状态权威地存在 SQLite 里，通过可插拔运行时暴露给 agent，目前有容器 FUSE 挂载、isolate shell、纯 SQLite 三种后端。",
+      "verdict": "burst_ratio 0.875，说明这周才被引爆。但 90 天 726 次提交、10 个贡献者、README 里一个导流徽章都没有——热度是代码挣来的。本周唯一一个值得直接 clone 的。"
+    },
+    {
+      "name": "semantica-agi/semantica",
+      "tone": "warning",
+      "facts": ["README 7.5 万字", "27 位贡献者", "90 天 711 次提交", "trendshift + star-history + Discord"],
+      "intro": "图原生的上下文基础设施：把企业数据抽成 context graph 和知识图谱，在其上跑图分析与因果推理，强调决策链路可追溯。",
+      "verdict": "README 七万五千字，自称「AI 界的开源 Palantir」，三种导流徽章挂满。27 个贡献者、711 次提交说明有真东西，但营销密度已经压过技术密度。"
+    },
+    {
+      "name": "TencentCloud/TencentDB-Agent-Memory",
+      "tone": "danger",
+      "facts": ["默认分支 feat/server_team", "该分支 90 天 10 次提交", "553 个 issue 未关", "许可证 NOASSERTION"],
+      "intro": "面向 AI Agent 的团队级记忆中枢，把对话、文档、代码沉淀成 Chat Memory、Skill、LLM-Wiki、Code-Graph 四类可复用记忆资产，跨 agent 框架共享和调度。",
+      "verdict": "两万 star 的仓库，默认分支还挂在 feat/server_team，这条分支 90 天只有 10 次提交，553 个 issue 没人管，许可证是 NOASSERTION。热度是发布会给的，不是维护给的；接进生产先过法务。"
+    },
+    {
+      "name": "huangruiteng/loopx",
+      "tone": "success",
+      "facts": ["73 天 4310 次提交", "32 位贡献者", "个人仓库", "burst_ratio 0.62"],
+      "intro": "长时运行 agent 团队的循环状态内核：持久目标、配额感知自动唤醒、可执行 todo、证据日志、可验证交接，跨 Codex / Claude Code / Cursor 通用。",
+      "verdict": "73 天做出 4310 次提交、拉到 32 个贡献者，个人仓库里罕见的强度。但它赌的是「模型自己管不好长任务状态」，而这个赌注只有 73 天的历史可查。"
+    },
+    {
+      "name": "firecrawl/pdf-inspector",
+      "tone": "success",
+      "facts": ["90 天 119 次提交", "12 位贡献者", "无导流徽章", "crates + npm + PyPI 三端发包"],
+      "intro": "Rust 写的 PDF 检查与抽取库，先判断 PDF 是文本型还是扫描件，再决定走不走 OCR，输出带位置信息的文本和干净 Markdown。",
+      "verdict": "无导流徽章、三端发包、90 天 119 次提交，是本周少数「只做完一件小事」的项目。RAG 流水线里最脏的活它接了。"
+    },
+    {
+      "name": "google/skills",
+      "tone": "warning",
+      "facts": ["6 位贡献者", "90 天 199 次提交", "README 自标 under active development", "Apache-2.0"],
+      "intro": "Google 官方的 Agent Skills 集合，覆盖 Google Cloud 等自家产品，用 npx skills add google/skills 挑着装。",
+      "verdict": "1.8 万 star 配 6 个贡献者，README 自己写着「under active development」。这是 Google 在 skill 生态里占坑——你装的不是工具，是它的产品入口。"
+    },
+    {
+      "name": "vitali87/code-graph-rag",
+      "tone": "warning",
+      "facts": ["48 位贡献者", "90 天 3018 次提交", "README 注明 GitHub 账号被封"],
+      "intro": "给 monorepo 用的代码知识图谱 RAG：tree-sitter 建多语言 AST 图，落到 Memgraph，通过 MCP 接进 Claude Code 等客户端做查询和改写。",
+      "verdict": "48 个贡献者、90 天 3018 次提交，工程是实的。但 README 里留着一段注释：徽章因为「GitHub 账号被封」而暂时移除，等恢复再放回。榜上唯一带这种备注的项目，自己掂量。"
+    },
+    {
+      "name": "zhaoxuya520/reverse-skill",
+      "tone": "warning",
+      "facts": ["267 star/天", "90 天仅 38 次提交", "5 位贡献者", "挂 trendshift 徽章"],
+      "intro": "逆向 / 渗透 / 安全研究方向的 AI skill 路由包：按需自举工具链、自动进化经验库，挂到 Claude Code、Cursor、Cline 等客户端上用。",
+      "verdict": "日均 267 star，90 天却只有 38 次提交——涨的是 prompt 和文档，不是工程。安全工具链尤其看维护者，5 个贡献者的逆向包，进内网前自己审一遍再说。"
+    },
+    {
+      "name": "esengine/DeepSeek-Reasonix",
+      "tone": "success",
+      "facts": ["132 位贡献者", "90 天 5409 次提交", "1323 个 issue 未关"],
+      "intro": "跑在终端里的 DeepSeek 原生编码 agent，围绕 prefix cache 稳定性做工程，主打长时间常驻不重启。",
+      "verdict": "132 个贡献者、90 天 5409 次提交，工程强度是榜上最高的一档。代价是 1323 个 issue 未关——它涨得比维护能力快。"
+    },
+    {
+      "name": "drawdb-io/drawdb",
+      "tone": "success",
+      "facts": ["建仓 1122 天", "burst_ratio 0.015", "144 位贡献者", "AGPL-3.0"],
+      "intro": "在线数据库 ER 图编辑器兼 SQL 生成器，纯前端跑在 IndexedDB 上，免费开源。",
+      "verdict": "榜上唯一与 AI 无关的项目。3.9 万 star 本周只涨 597，burst_ratio 0.015——它是被算法捎带上榜的老将。要商用先看清 AGPL-3.0。"
+    }
+  ],
+  "summary": "10 个项目里只有 drawDB 与 AI 无关，其余全部围绕 agent 的记忆、循环、skill 包和终端形态打转，赛道已经卷到互相抄 README 结构；6 个挂着 trendshift 导流徽章。同时满足「90 天提交过百」且「README 无导流徽章」的只有 cloudflare/computer、firecrawl/pdf-inspector、google/skills 三个。",
+  "note": "口径提醒：contributors 与 90 天提交数均只统计默认分支，且 GitHub 不认未绑定账号的提交邮箱，低值只能说明默认分支上可归属的工程活动少，不等于「只有这几个人在写」。"
+}

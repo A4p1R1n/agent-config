@@ -44,3 +44,11 @@ categories:
       - name: hotfix-do-dimension
         path: skills/deploy/hotfix-do-dimension
         summary: do_dimension 火线修复（基于 tag cherry-pick）
+
+  info:
+    title: 资讯与调研
+    description: 外部信息抓取、榜单跟踪、技术选型参考
+    skills:
+      - name: github-weekly-hot
+        path: skills/info/github-weekly-hot
+        summary: GitHub Trending 周榜锐评（链接 + 介绍 + 数据支撑评价 → HTML）

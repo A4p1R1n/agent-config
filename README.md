@@ -6,7 +6,7 @@
 
 ```
 agent-config/
-├── catalog.yaml             # skills 分类目录（debug / deploy）
+├── catalog.yaml             # skills 分类目录（debug / deploy / info）
 ├── WORKFLOW.md              # Debug Case → 部署：每步用哪个 skill
 ├── CASE_WALKTHROUGH.md      # 具体 case 教程：提示词 × skill 说明
 ├── examples/                # 教程配套产物（如投影线 HTML）
@@ -17,13 +17,15 @@ agent-config/
 │   │   ├── debug-case-kb/         # debug 案例知识图谱
 │   │   ├── parametric-regression/ # 投图回归对比
 │   │   └── viz-scene-faces/       # OCC 场景面可视化
-│   └── deploy/              # 部署与发版
-│       ├── deploy-do-env/         # conda 算法环境
-│       ├── commit-and-push/       # git 提交推送
-│       ├── publish-package/       # dodimension 发包
-│       ├── algorithm-service-release/  # 算法服务 release/tag
-│       ├── jenkins-service-release/    # Jenkins K8s 部署
-│       └── hotfix-do-dimension/   # 火线修复
+│   ├── deploy/              # 部署与发版
+│   │   ├── deploy-do-env/         # conda 算法环境
+│   │   ├── commit-and-push/       # git 提交推送
+│   │   ├── publish-package/       # dodimension 发包
+│   │   ├── algorithm-service-release/  # 算法服务 release/tag
+│   │   ├── jenkins-service-release/    # Jenkins K8s 部署
+│   │   └── hotfix-do-dimension/   # 火线修复
+│   └── info/                # 资讯与调研
+│       └── github-weekly-hot/     # GitHub 周榜锐评 → HTML
 ├── rules/
 │   ├── cursor/              # Cursor rules（.mdc），链接到 ~/.cursor/rules/
 │   ├── claude/              # Claude Code 全局指令（CLAUDE.md）
