@@ -108,9 +108,11 @@ class WeldClassifier:
             return out
 
 
-def build_row(item: dict, track: str, result: dict) -> dict:
+def build_row(item: dict, track: str, result: dict, weight_sha: str) -> dict:
     return {
         "track": track,
+        # sidecar 必须自带权重身份：否则换权重重跑时缓存会静默复用旧预测
+        "weight_sha256": weight_sha,
         "group_id": item.get("group_id"),
         "parent_group_id": item.get("parent_group_id"),
         "name": item.get("name") or "",
@@ -142,19 +144,30 @@ def restore_gt(row: dict, prior_gt: dict) -> dict:
     return row
 
 
-def load_cached_row(side: Path, track: str) -> dict | None:
+def load_cached_row(side: Path, track: str, weight_sha: str) -> tuple[dict | None, str]:
+    """返回 (缓存行, 状态)，状态取 hit / legacy / miss。
+
+    legacy = sidecar 早于 weight_sha256 字段，无从判断是哪个权重跑的。
+    这种不强制重跑（存量数据代价太大），但要计数并在报告里标出来，
+    绝不能当成"就是当前权重"混进去。
+    """
     if not side.is_file():
-        return None
+        return None, "miss"
     try:
         cached = read_json(side)
     except Exception:
-        return None
-    if cached.get("success") and cached.get("track") == track:
-        return cached
-    return None
+        return None, "miss"
+    if not cached.get("success") or cached.get("track") != track:
+        return None, "miss"
+    cached_sha = str(cached.get("weight_sha256") or "")
+    if not cached_sha:
+        return cached, "legacy"
+    if cached_sha != weight_sha:
+        return None, "miss"
+    return cached, "hit"
 
 
-def run_case(clf: WeldClassifier, case_dir: Path, tracks: tuple[str, ...], weight: Path) -> dict:
+def run_case(clf: WeldClassifier, case_dir: Path, tracks: tuple[str, ...], winfo: dict) -> dict:
     manifest = read_json(case_dir / "manifest.json")
     index = list(manifest.get("index") or [])
     out_path = case_dir / "classify_results.json"
@@ -172,18 +185,22 @@ def run_case(clf: WeldClassifier, case_dir: Path, tracks: tuple[str, ...], weigh
     todo = [r for r in index if r.get("track") in tracks and r.get("has_stp") and r.get("stp_relpath")]
     log(f"\n==== {case_dir.name} todo={len(todo)} keep={len(keep)} ====")
 
+    weight_sha = str(winfo.get("weight_sha256") or "")
     rows = []
     ok = 0
     fail = 0
+    legacy = 0
     for i, item in enumerate(todo, 1):
         track = item["track"]
         stp = case_dir / item["stp_relpath"]
         side = stp.with_suffix(".classify.json")
-        cached = load_cached_row(side, track)
+        cached, state = load_cached_row(side, track, weight_sha)
         if cached:
+            if state == "legacy":
+                legacy += 1
             rows.append(restore_gt(cached, prior_gt))
             ok += 1
-            log(f"[{i}/{len(todo)}] cached {item.get('name', '')[:40]} -> {cached.get('pred')}")
+            log(f"[{i}/{len(todo)}] {state} {item.get('name', '')[:40]} -> {cached.get('pred')}")
             continue
 
         log(f"[{i}/{len(todo)}] {track} {item.get('name', '')[:50]}")
@@ -197,7 +214,7 @@ def run_case(clf: WeldClassifier, case_dir: Path, tracks: tuple[str, ...], weigh
                 "pred": "",
                 "elapsed_sec": None,
             }
-        row = restore_gt(build_row(item, track, result), prior_gt)
+        row = restore_gt(build_row(item, track, result, weight_sha), prior_gt)
         rows.append(row)
         if row["success"]:
             ok += 1
@@ -213,6 +230,13 @@ def run_case(clf: WeldClassifier, case_dir: Path, tracks: tuple[str, ...], weigh
             log(f"  FAIL {result.get('error')}")
 
     merged = keep + rows
+    # 按整份产物统计权重一致性：keep 里是别的档位上一次跑的，可能来自别的权重
+    legacy_rows = sum(1 for r in merged if not str(r.get("weight_sha256") or ""))
+    stale_rows = sum(
+        1
+        for r in merged
+        if str(r.get("weight_sha256") or "") not in ("", weight_sha)
+    )
     by_track = Counter(r.get("track") for r in merged if r.get("success"))
     pred_by_track = {track: Counter() for track in TRACKS}
     for row in merged:
@@ -225,17 +249,43 @@ def run_case(clf: WeldClassifier, case_dir: Path, tracks: tuple[str, ...], weigh
         "engineering_id": manifest.get("engineering_id"),
         "eng_name": manifest.get("eng_name"),
         "created_at": datetime.now().isoformat(timespec="seconds"),
-        **weight_info(weight),
+        **winfo,
         "total": len(merged),
         "success": sum(1 for r in merged if r.get("success")),
         "failed": sum(1 for r in merged if not r.get("success")),
+        "legacy_cached": legacy_rows,
+        "other_weight_rows": stale_rows,
         "by_track": dict(by_track),
         "pred_dist": {k: dict(v) for k, v in pred_by_track.items()},
         "results": merged,
     }
     write_json(out_path, summary)
-    log(f"saved {out_path} run_ok={ok} run_fail={fail} total_ok={summary['success']}")
+    tail = f" legacy={legacy_rows}" if legacy_rows else ""
+    tail += f" other_weight={stale_rows}" if stale_rows else ""
+    log(f"saved {out_path} run_ok={ok} run_fail={fail} total_ok={summary['success']}{tail}")
     return summary
+
+
+def warn_weight_change(root: Path, winfo: dict) -> None:
+    """本次权重与该 ROOT 上次跑的不一致时，开跑前就说清楚，别等报告出来才发现。"""
+    path = root / "classify_overview.json"
+    if not path.is_file():
+        return
+    try:
+        previous = read_json(path)
+    except Exception:
+        return
+    prior_sha = str(previous.get("weight_sha256") or "")
+    if not prior_sha:
+        log(f"NOTE {path.name} 未记权重；已有 sidecar 会按 legacy 计数，不强制重跑")
+        return
+    if prior_sha != winfo["weight_sha256"]:
+        log(
+            f"WARNING 权重变了：{root.name} 上次是 "
+            f"{previous.get('weight_name')} sha={prior_sha[:12]}，"
+            f"本次 {winfo['weight_name']} sha={winfo['weight_sha256'][:12]}；"
+            "旧 sidecar 会被判定失效并重新分类"
+        )
 
 
 def main() -> None:
@@ -257,6 +307,10 @@ def main() -> None:
     tracks = TRACKS if args.track == "both" else (args.track,)
     ai_sim = resolve_ai_sim(args.ai_sim)
     weight = resolve_weight(ai_sim, args.weight)
+    winfo = weight_info(weight)
+    picked = "显式指定" if args.weight else "自动取最新"
+    log(f"weight [{picked}] {winfo['weight_name']} sha={winfo['weight_sha256'][:12]}")
+    warn_weight_change(root, winfo)
 
     clf = WeldClassifier(ai_sim, weight, int(args.skip_postprocess_mb * 1e6))
     cases = iter_cases(root, args.only)
@@ -264,7 +318,7 @@ def main() -> None:
         raise SystemExit(f"no case_* dirs under {root}")
 
     for case_dir in cases:
-        run_case(clf, case_dir, tracks, weight)
+        run_case(clf, case_dir, tracks, winfo)
 
     overview_cases = []
     for case_dir in iter_cases(root):
@@ -279,20 +333,31 @@ def main() -> None:
                 "success": summary["success"],
                 "failed": summary["failed"],
                 "total": summary["total"],
+                "legacy_cached": summary.get("legacy_cached", 0),
+                "other_weight_rows": summary.get("other_weight_rows", 0),
                 "by_track": summary.get("by_track"),
                 "pred_dist": summary.get("pred_dist"),
             }
         )
+    total_legacy = sum(c["legacy_cached"] for c in overview_cases)
+    total_other = sum(c["other_weight_rows"] for c in overview_cases)
     write_json(
         root / "classify_overview.json",
         {
             "created_at": datetime.now().isoformat(timespec="seconds"),
-            **weight_info(weight),
+            **winfo,
+            "legacy_cached": total_legacy,
+            "other_weight_rows": total_other,
             "cases": overview_cases,
         },
     )
     total_ok = sum(c["success"] for c in overview_cases)
     log(f"\nOVERVIEW -> {root / 'classify_overview.json'} cases={len(overview_cases)} ok={total_ok}")
+    if total_legacy or total_other:
+        log(
+            f"  注意：{total_legacy} 条来自未记权重的旧缓存，"
+            f"{total_other} 条来自其他权重 —— 报告会标注，不要当成纯本权重结果"
+        )
 
 
 if __name__ == "__main__":

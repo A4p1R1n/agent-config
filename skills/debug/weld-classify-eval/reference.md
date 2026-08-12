@@ -103,6 +103,12 @@ AES-128-ECB + PKCS7 加密，密钥硬编码在前端（`_11111000001111@`），
 10MB 的更久。`classify_weld.py` 默认对 >1.5MB 的直接跳过后处理，只用点云粗类，
 结果里带 `postprocess_skipped: "large_stp"` 标记。阈值用 `--skip-postprocess-mb` 调。
 
+**缓存必须带权重身份**：早期 `load_cached_row` 只校验 `success` + `track`，
+换权重重跑时每条都命中 sidecar，一条都不会重算，但 `classify_results.json` 顶层却记着新权重——
+报告会拿新权重的名字去背旧权重的成绩。现在 sidecar 里存 `weight_sha256`，
+不一致即失效重跑；无该字段的历史缓存计入 `legacy_cached` 并在报告里标注。
+加"记录了什么"的字段时，务必顺着 resume 路径确认那个记录是真的。
+
 **不要并发跑两份分类进程**：CPU 抢占会让整体更慢，且日志交错难排查。
 中断后重跑即可，sidecar `.classify.json` 会自动跳过已完成项。
 

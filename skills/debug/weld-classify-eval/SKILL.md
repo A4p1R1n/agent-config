@@ -114,6 +114,9 @@ python "$SKILL_DIR/scripts/classify_weld.py" --root <ROOT> --track both
 ```
 
 - 可中断续跑：每个 STP 旁的 `.classify.json` 会自动跳过。
+- **缓存按权重 sha 校验**：换权重后旧 sidecar 自动失效、重新分类；开跑前会打印本次权重并在
+  与该 ROOT 上次不同时给 WARNING。没有 sha 的历史 sidecar 计为 `legacy_cached`，
+  不强制重跑，但报告页头会标明"这些条目不能算作本权重的成绩"。
 - >1.5MB 的 STP 默认跳过几何后处理（否则单件可能耗时 10 分钟以上），用 `--skip-postprocess-mb` 调。
 - **不要同时开两个分类进程**，会互相抢 CPU。
 - 后台跑，用完成通知等它，不要空转轮询。

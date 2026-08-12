@@ -173,14 +173,23 @@ def apply_labels(case_dir: Path, allow_partial: bool) -> list[dict]:
     return kept
 
 
-def weight_label(weights: dict) -> str:
-    """标明这些准确率是哪个权重跑出来的；万一混了多个权重，必须在报告里看得见。"""
+def weight_label(weights: dict, legacy: int, other: int) -> str:
+    """标明这些准确率是哪个权重跑出来的；混了多个权重或有来源不明的缓存，必须看得见。"""
     if not weights:
-        return "未记录（分类产物早于 weight_sha256 字段）"
-    bits = []
-    for name, sha in weights.items():
-        bits.append(f"{name} · {sha[:12]}" if sha else f"{name} · sha 未记录")
-    return " ｜ ".join(bits)
+        base = "未记录（分类产物早于 weight_sha256 字段）"
+    else:
+        bits = []
+        for name, sha in weights.items():
+            bits.append(f"{name} · {sha[:12]}" if sha else f"{name} · sha 未记录")
+        base = " ｜ ".join(bits)
+    notes = []
+    if legacy:
+        notes.append(f"{legacy} 条分类结果来自未记权重的旧缓存")
+    if other:
+        notes.append(f"{other} 条来自其他权重")
+    if notes:
+        base += "（" + "；".join(notes) + "，不能算作本权重的成绩）"
+    return base
 
 
 def nav_html(pages: list[dict], active: str) -> str:
@@ -244,6 +253,8 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
 
     cases = []
     weights: dict[str, str] = {}
+    legacy_total = 0
+    other_weight_total = 0
     for i, case_dir in enumerate(iter_cases(root), 1):
         if not (case_dir / "_gt_review" / "features.json").is_file():
             continue
@@ -255,6 +266,8 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
         weight_name = str(clf.get("weight_name") or "") or Path(str(clf.get("weight") or "")).name
         if weight_name:
             weights.setdefault(weight_name, str(clf.get("weight_sha256") or ""))
+        legacy_total += int(clf.get("legacy_cached") or 0)
+        other_weight_total += int(clf.get("other_weight_rows") or 0)
         case_img = img_root / f"case{i:02d}"
         case_img.mkdir(exist_ok=True)
         enriched = []
@@ -383,7 +396,7 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
         + nav_html(pages, "index.html")
         + f"<h1>{html.escape(title)}</h1>"
         f'<p class="sub">LLM 目视 GT × 点云焊接细类 pred · {datetime.now().strftime("%Y-%m-%d %H:%M")}'
-        f"<br/>权重 {html.escape(weight_label(weights))}</p>"
+        f"<br/>权重 {html.escape(weight_label(weights, legacy_total, other_weight_total))}</p>"
         '<div class="grid">'
         f'<div class="stat"><div class="k">总体准确率</div><div class="v">{total_hit}/{total_n}</div>'
         f'<div class="s">{total_acc:.1f}%</div></div>'
@@ -415,6 +428,8 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
         "created_at": datetime.now().isoformat(timespec="seconds"),
         "title": title,
         "weights": weights,
+        "legacy_cached": legacy_total,
+        "other_weight_rows": other_weight_total,
         "total": total_n,
         "hit": total_hit,
         "acc": round(total_acc, 2),
