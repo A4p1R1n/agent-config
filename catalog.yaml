@@ -4,7 +4,7 @@ version: 1
 categories:
   debug:
     title: 调试与排查
-    description: 复现问题、可视化、案例归档、回归对比
+    description: 复现问题、可视化、案例归档、回归对比、模型评测
     skills:
       - name: debug-parametric
         path: skills/debug/debug-parametric
@@ -18,6 +18,9 @@ categories:
       - name: viz-scene-faces
         path: skills/debug/viz-scene-faces
         summary: OCC 窗口高亮场景面（斜面/倒角/集群）
+      - name: weld-classify-eval
+        path: skills/debug/weld-classify-eval
+        summary: 焊接件细类模型评测：拉 STP → 分类 → 目视 GT → 准确率 HTML 报告
 
   deploy:
     title: 部署与发版

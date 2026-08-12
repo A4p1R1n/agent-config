@@ -1,0 +1,169 @@
+---
+name: weld-classify-eval
+description: >-
+  Evaluate the welded-part fine-class point-cloud model (pointNet_weldedPart_*.pth
+  + geometry postprocess) on real project data: pull part.stp/body.stp from DAL,
+  classify both Product→Part and Part→SLD tracks, render three-view images, label
+  visual GT with parallel subagents, and build a multi-page HTML accuracy report.
+  Use when the user asks to evaluate/measure welded fine classification accuracy,
+  score a project's parts against the weld model, produce a GT report for welded
+  subtypes, or says /weld-classify-eval.
+---
+
+# 焊接细类分类评测
+
+对 **焊接件细类模型**（`pointNet_weldedPart_*.pth` + 几何后处理）跑真实项目数据，
+产出 **目视 GT vs 模型 pred 的准确率报告**。
+
+细类共 10 类：Base板 / 连接板 / 加强筋 / 贴板 / 矩形管 / 方管 / 圆管 / 圆棒 / 槽钢 / 角钢。
+
+两个档位分别评：
+
+| track | 文件 | 含义 |
+|---|---|---|
+| `product_to_part` | `part.stp` | 产品 → 零件 |
+| `part_to_sld` | `body.stp` | 零件 → 几何体（线上焊接下料走这条） |
+
+**除非用户明确只要一档，默认两档都跑。**
+
+## 环境
+
+```bash
+conda activate py12     # 需要 pythonocc-core 7.9.x + torch + dal SDK
+export SKILL_DIR=<本 SKILL.md 所在目录>
+export DO_DAL_API_BASE_URL=https://dal.designorder.cn        # 拉数据才需要
+export AI_PART_SIMILARITY_DIR=<...>/ai_part_similarity-dev   # 模型与权重所在 checkout
+```
+
+本 skill 装在 agent-config 里、由 `install.sh` 软链出去，**和被测代码没有固定相对关系**。
+`AI_PART_SIMILARITY_DIR` 没设时，脚本从**当前目录逐级往上**找 `ai_part_similarity-dev`
+（在 `do_part_cla` 仓库里跑就能自动命中），找不到会报错要求显式给 `--ai-sim`。
+权重同理：默认取最新的 `pointNet_weldedPart_*.pth`，可用 `--weight` / `WELD_WEIGHT_PATH` 指定。
+
+下面命令一律 `python "$SKILL_DIR/scripts/xxx.py"`，**工作目录放被测仓库根目录**。
+
+## 流程
+
+复制这个清单跟踪进度：
+
+```
+- [ ] 1. 确定工程清单 parts.json
+- [ ] 2. 拉 STP
+- [ ] 3. 跑分类
+- [ ] 4. 渲染三视图
+- [ ] 5. 并行目视 GT
+- [ ] 6. 校验 GT 覆盖
+- [ ] 7. 生成 HTML 报告
+```
+
+### 1. 确定工程清单
+
+**用户只需要给一个项目页 URL**，清单自动从页面自己调的那个 ES 接口取：
+
+```bash
+python "$SKILL_DIR/scripts/fetch_project_parts.py" --url "<项目页 URL>" --out parts.json \
+  --exclude Product1
+```
+
+前置：CDP proxy 在跑（加载 **web-access** skill，按它的前置检查启动）。脚本在后台开一个
+tab 读用户已登录的 localStorage、本地解出 `X-Access-Token`，查完关掉自己的 tab；
+proxy 只会关它自己建的 tab，不动用户已有 tab。
+
+**不要遍历 DAL 的 `3d/` 树**——里面有软删除副本，和页面显示对不上（实测 76 vs 41）。
+
+`--exclude` 按名字包含匹配剔除不该进评测的件（总成 `Product1`、夹具 `*-JIG` 等），
+剔掉的名字会记在 `parts.json` 的 `exclude` 字段里。
+
+没有 CDP 时的兜底（`--token` / `--from-response`）和接口细节见
+[reference.md](reference.md) 第一节。
+
+用户已有本地 case 目录时，跳到第 3 步。
+
+### 2. 拉 STP
+
+```bash
+python "$SKILL_DIR/scripts/pull_dal_stp.py" --list parts.json --out <ROOT>
+```
+
+产出 `<ROOT>/case_<engineering_id>_<name>/`，含 `manifest.json` 和两档 STP。
+装配体子 PART 缺 `part.stp` 是正常的。
+
+### 3. 跑分类
+
+```bash
+python "$SKILL_DIR/scripts/classify_weld.py" --root <ROOT> --track both
+```
+
+- 可中断续跑：每个 STP 旁的 `.classify.json` 会自动跳过。
+- >1.5MB 的 STP 默认跳过几何后处理（否则单件可能耗时 10 分钟以上），用 `--skip-postprocess-mb` 调。
+- **不要同时开两个分类进程**，会互相抢 CPU。
+- 后台跑，用完成通知等它，不要空转轮询。
+
+### 4. 渲染三视图
+
+```bash
+python "$SKILL_DIR/scripts/render_gt_views.py" --root <ROOT> --track both
+```
+
+每条生成 iso/front/top 一张 PNG，标题带 `pred` / `bbox_lwh` / `fill_ratio`，
+并写 `<case>/_gt_review/features.json`。增量安全：已有 idx 不会被打乱。
+
+### 5. 并行目视 GT
+
+先按 body 数量把工作均分成 4~6 批，写成 `/tmp/gt_batches.json`：
+
+```python
+# 每个 unit: {"case": "<绝对路径>", "idxs": [1,2,3], "n": 3}
+# 单个 case 超过 25 条就按 25 切块，再贪心装箱到各批
+```
+
+然后**并行**起同样数量的 `generalPurpose` subagent，每个 prompt 里给：
+
+1. 读 `<SKILL_DIR>/gt-label-guide.md`
+2. 自己那一批 `batches[i]`
+3. 硬性要求：**必须用 Read 工具逐张看 PNG**；按 idx 合并进
+   `<case>/_gt_review/gt_labels.json`，保留其他 idx
+4. 只允许 10 个合法标签，`LARGE_BOARD` / `SMALL_BOARD` 不是合法 GT
+
+156 条 p2p 约 4 批、396 条 sld 约 6 批，实测各批 5~10 分钟。
+
+### 6. 校验 GT 覆盖
+
+```bash
+python "$SKILL_DIR/scripts/build_gt_report.py" --root <ROOT> --check-only
+```
+
+列出缺标 / 非法标签。有缺口就补起 subagent 重标那几个 idx，直到全覆盖再往下走。
+
+### 7. 生成 HTML 报告
+
+```bash
+python "$SKILL_DIR/scripts/build_gt_report.py" --root <ROOT> --names parts.json \
+  --title "<项目名> · 焊接细类分类"
+```
+
+同时会把 `gt_type` 回写进 `features.json` / `classify_results.json` / `manifest.json`
+（首次改 manifest 前自动备份 `.bak`）。
+
+输出 `<ROOT>/gt_report_pages/`：
+
+- `index.html` — 结论、两档准确率、分工程明细、GT/pred 分布、全部不一致清单
+- `caseNN.html` — 每个工程一页，逐条渲染图 + GT + pred
+- `summary.json` — 机读汇总
+
+最后向用户报两档准确率和报告路径。
+
+## 汇报格式
+
+```
+| 档位 | 准确率 |
+|---|---|
+| Product→Part | 104/156 (66.7%) |
+| Part→SLD | 224/396 (56.6%) |
+| 合计 | 328/552 (59.4%) |
+```
+
+## 其他资源
+
+- 标注规则（给 subagent 读）：[gt-label-guide.md](gt-label-guide.md)
+- 数据来源、目录结构、OCC/性能坑：[reference.md](reference.md)
