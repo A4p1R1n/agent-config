@@ -27,6 +27,7 @@ from common import (  # noqa: E402
     read_json,
     resolve_ai_sim,
     resolve_weight,
+    weight_info,
     write_json,
 )
 
@@ -224,7 +225,7 @@ def run_case(clf: WeldClassifier, case_dir: Path, tracks: tuple[str, ...], weigh
         "engineering_id": manifest.get("engineering_id"),
         "eng_name": manifest.get("eng_name"),
         "created_at": datetime.now().isoformat(timespec="seconds"),
-        "weight": str(weight),
+        **weight_info(weight),
         "total": len(merged),
         "success": sum(1 for r in merged if r.get("success")),
         "failed": sum(1 for r in merged if not r.get("success")),
@@ -286,7 +287,7 @@ def main() -> None:
         root / "classify_overview.json",
         {
             "created_at": datetime.now().isoformat(timespec="seconds"),
-            "weight": str(weight),
+            **weight_info(weight),
             "cases": overview_cases,
         },
     )

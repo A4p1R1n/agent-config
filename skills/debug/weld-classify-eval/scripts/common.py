@@ -2,6 +2,7 @@
 """Shared helpers for the weld-classify-eval pipeline."""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import re
@@ -102,6 +103,27 @@ def resolve_weight(ai_sim: Path, explicit: str = "") -> Path:
     if fallback.is_file():
         return fallback
     raise SystemExit(f"no welded weight found under {weights_dir}; pass --weight")
+
+
+def weight_info(weight: Path) -> dict:
+    """权重指纹，写进每份产物。
+
+    只记路径不够：同名文件被换掉后报告里的准确率就无从追溯，所以带上 size + sha256。
+    """
+    path = Path(weight)
+    digest = hashlib.sha256()
+    with path.open("rb") as fh:
+        while True:
+            chunk = fh.read(1 << 20)
+            if not chunk:
+                break
+            digest.update(chunk)
+    return {
+        "weight": str(path),
+        "weight_name": path.name,
+        "weight_size": path.stat().st_size,
+        "weight_sha256": digest.hexdigest(),
+    }
 
 
 def case_display_name(case_dir: Path, engineering_id: str, name_map: dict) -> str:

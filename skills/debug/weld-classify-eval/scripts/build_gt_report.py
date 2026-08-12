@@ -173,6 +173,16 @@ def apply_labels(case_dir: Path, allow_partial: bool) -> list[dict]:
     return kept
 
 
+def weight_label(weights: dict) -> str:
+    """标明这些准确率是哪个权重跑出来的；万一混了多个权重，必须在报告里看得见。"""
+    if not weights:
+        return "未记录（分类产物早于 weight_sha256 字段）"
+    bits = []
+    for name, sha in weights.items():
+        bits.append(f"{name} · {sha[:12]}" if sha else f"{name} · sha 未记录")
+    return " ｜ ".join(bits)
+
+
 def nav_html(pages: list[dict], active: str) -> str:
     links = [
         f'<a class="{"active" if p["file"] == active else ""}" href="{html.escape(p["file"])}">'
@@ -233,6 +243,7 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
     img_root.mkdir(exist_ok=True)
 
     cases = []
+    weights: dict[str, str] = {}
     for i, case_dir in enumerate(iter_cases(root), 1):
         if not (case_dir / "_gt_review" / "features.json").is_file():
             continue
@@ -241,6 +252,9 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
             continue
         clf = read_json(case_dir / "classify_results.json")
         engineering_id = str(clf.get("engineering_id") or "")
+        weight_name = str(clf.get("weight_name") or "") or Path(str(clf.get("weight") or "")).name
+        if weight_name:
+            weights.setdefault(weight_name, str(clf.get("weight_sha256") or ""))
         case_img = img_root / f"case{i:02d}"
         case_img.mkdir(exist_ok=True)
         enriched = []
@@ -368,7 +382,8 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
         f"<title>{html.escape(title)}</title><style>{CSS}</style></head><body><div class=\"wrap\">"
         + nav_html(pages, "index.html")
         + f"<h1>{html.escape(title)}</h1>"
-        f'<p class="sub">LLM 目视 GT × 点云焊接细类 pred · {datetime.now().strftime("%Y-%m-%d %H:%M")}</p>'
+        f'<p class="sub">LLM 目视 GT × 点云焊接细类 pred · {datetime.now().strftime("%Y-%m-%d %H:%M")}'
+        f"<br/>权重 {html.escape(weight_label(weights))}</p>"
         '<div class="grid">'
         f'<div class="stat"><div class="k">总体准确率</div><div class="v">{total_hit}/{total_n}</div>'
         f'<div class="s">{total_acc:.1f}%</div></div>'
@@ -399,6 +414,7 @@ def build(root: Path, out_dir: Path, name_map: dict, title: str, allow_partial: 
     summary = {
         "created_at": datetime.now().isoformat(timespec="seconds"),
         "title": title,
+        "weights": weights,
         "total": total_n,
         "hit": total_hit,
         "acc": round(total_acc, 2),

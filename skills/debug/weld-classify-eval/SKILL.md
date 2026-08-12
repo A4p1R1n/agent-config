@@ -38,9 +38,28 @@ export AI_PART_SIMILARITY_DIR=<...>/ai_part_similarity-dev   # 模型与权重�
 本 skill 装在 agent-config 里、由 `install.sh` 软链出去，**和被测代码没有固定相对关系**。
 `AI_PART_SIMILARITY_DIR` 没设时，脚本从**当前目录逐级往上**找 `ai_part_similarity-dev`
 （在 `do_part_cla` 仓库里跑就能自动命中），找不到会报错要求显式给 `--ai-sim`。
-权重同理：默认取最新的 `pointNet_weldedPart_*.pth`，可用 `--weight` / `WELD_WEIGHT_PATH` 指定。
-
 下面命令一律 `python "$SKILL_DIR/scripts/xxx.py"`，**工作目录放被测仓库根目录**。
+
+### 权重从哪来
+
+`dopartsim` 和权重都在 **do_part_cla** 仓库里
+（`git.designorder.cn/turing/product/do_part_cla`），`ai_part_similarity-dev/weights/*.pth`
+直接提交进 git（没走 LFS，`weights/` 共 116 MB），**clone 一份就有权重，不用另外下载**。
+
+基准权重（[reference.md](reference.md) 第六节那组准确率就是它跑出来的）：
+
+| 项 | 值 |
+|---|---|
+| 文件 | `ai_part_similarity-dev/weights/pointNet_weldedPart_260211.pth` |
+| 大小 | 6,478,069 B |
+| sha256 | `24ad9d4b7cfc835108e547057e72522fe9359dda6c45117b198d90bce80a8a06` |
+
+`resolve_weight` 默认按文件名排序取**最新**的 `pointNet_weldedPart_*.pth`：仓库里一旦出现更新的
+权重，同样的命令会跑出不同结果。要和历史基准对比就显式 `--weight` 指到上面这个文件
+（或设 `WELD_WEIGHT_PATH`）。
+
+分类产物（`classify_results.json` / `classify_overview.json`）和 HTML 报告都会记
+`weight_name` / `weight_size` / `weight_sha256`，事后能核对某份报告到底是哪个权重跑的。
 
 ## 流程
 
