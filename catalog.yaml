@@ -18,6 +18,9 @@ categories:
       - name: viz-scene-faces
         path: skills/debug/viz-scene-faces
         summary: OCC 窗口高亮场景面（斜面/倒角/集群）
+      - name: fix-projection-coord
+        path: skills/debug/fix-projection-coord
+        summary: 按方案链接批量重算投图姿态并写回 DAL（判稳后 dry-run → 写入；也可只作废历史姿态）
       - name: weld-classify-eval
         path: skills/debug/weld-classify-eval
         summary: 焊接件细类模型评测：拉 STP → 分类 → 目视 GT → 准确率 HTML 报告

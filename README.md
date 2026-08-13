@@ -16,7 +16,9 @@ agent-config/
 │   │   ├── debug-parametric/      # do_dimension 调试流程
 │   │   ├── debug-case-kb/         # debug 案例知识图谱
 │   │   ├── parametric-regression/ # 投图回归对比
-│   │   └── viz-scene-faces/       # OCC 场景面可视化
+│   │   ├── viz-scene-faces/       # OCC 场景面可视化
+│   │   ├── weld-classify-eval/    # 焊接件细类模型评测
+│   │   └── fix-projection-coord/  # 投图姿态批量重算写回 DAL
 │   ├── deploy/              # 部署与发版
 │   │   ├── deploy-do-env/         # conda 算法环境
 │   │   ├── commit-and-push/       # git 提交推送
