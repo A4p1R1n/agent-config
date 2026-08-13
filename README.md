@@ -25,7 +25,9 @@ agent-config/
 │   │   ├── jenkins-service-release/    # Jenkins K8s 部署
 │   │   └── hotfix-do-dimension/   # 火线修复
 │   └── common/              # 通用（与具体项目无关）
-│       ├── paper-recommend/       # 论文推荐 + 锐评 + Obsidian 知识图谱 + 离线 HTML
+│       ├── matt/                  # 不知道用哪个工程 skill 时的推荐器
+│       ├── taste/                 # 前端设计 taste skill 选择器
+│       ├── paper-recommend/       # 论文推荐 + 锐评 + Obsidian 知识图谱 + 本地 PDF + 离线 HTML
 │       ├── github-weekly-hot/     # GitHub 周榜锐评 → HTML
 │       └── github-repo-recommend/ # 关键字找开源仓库选型 → HTML
 ├── rules/
@@ -55,4 +57,4 @@ mkdir skills/debug/my-skill    # 或 skills/deploy/
 ./install.sh   # 重新链接
 ```
 
-分类说明见 [catalog.yaml](catalog.yaml)。完整「排查 → 发包 → 服务上线」步骤与 skill 对照见 [WORKFLOW.md](WORKFLOW.md)。带具体 case、提示词与 skill 介绍的教程见 [CASE_WALKTHROUGH.md](CASE_WALKTHROUGH.md)。
+分类说明见 [catalog.yaml](catalog.yaml)。完整「排查 → 发包 → 服务上线」步骤与 skill 对照见 [WORKFLOW.md](WORKFLOW.md)。带具体 case、提示词、skill 介绍与**实跑可视化 HTML** 的教程见 [CASE_WALKTHROUGH.md](CASE_WALKTHROUGH.md)。

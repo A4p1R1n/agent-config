@@ -47,11 +47,17 @@ categories:
 
   common:
     title: 通用
-    description: 与具体项目无关的通用能力：开源选型、论文调研、榜单跟踪
+    description: 与具体项目无关的通用能力：skill 路由、开源选型、论文调研、榜单跟踪
     skills:
+      - name: matt
+        path: skills/common/matt
+        summary: 不知道该用哪个工程 skill 时的推荐器（情境 → 分流表 → 推荐 + 备选 → 加载 mattpocock/skills）
+      - name: taste
+        path: skills/common/taste
+        summary: 前端设计 taste skill 选择器（列目录 → 选一个 → 加载 Leonxlnx/taste-skill）
       - name: paper-recommend
         path: skills/common/paper-recommend
-        summary: 按兴趣推荐 5 篇论文（摘要/锐评/对比历史），沉淀为 Obsidian 论文库 + 实体知识图谱 + 离线交互 HTML
+        summary: 按兴趣推荐 5 篇论文（摘要/锐评/对比历史），沉淀为 Obsidian 论文库 + 实体知识图谱 + 本地 PDF + 离线交互 HTML
       - name: github-weekly-hot
         path: skills/common/github-weekly-hot
         summary: GitHub Trending 周榜锐评（链接 + 介绍 + 数据支撑评价 → HTML）
