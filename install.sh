@@ -15,6 +15,11 @@ done
 while IFS= read -r skill_dir; do
     name="$(basename "$skill_dir")"
     for target in "${SKILL_TARGETS[@]}"; do
+        # ln -sfn 的 -n 只对「指向目录的软链」生效；撞上实体目录会在其内部建链接而非替换
+        if [ -d "$target/$name" ] && [ ! -L "$target/$name" ]; then
+            rm -rf "$target/$name"
+            echo "clean: $target/$name (stale real dir removed)"
+        fi
         ln -sfn "$skill_dir" "$target/$name"
         echo "link: $target/$name -> ${skill_dir#$REPO_DIR/}"
     done
